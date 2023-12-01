@@ -73,7 +73,24 @@ The tool is especially beneficial in scenarios where efficient and user-friendly
 1.3 Glossary
 ------------
 
-Define and technical terms used in this document. Only include those with which the reader may not be familiar.
+Certainly! For a project like ChatSQL, here's a list of terms that could be valuable additions to the glossary section of your documentation:
+
+1. **SQL (Structured Query Language):** A standard language for accessing and manipulating databases.
+2. **Natural Language Processing (NLP):** A branch of artificial intelligence that helps computers understand, interpret, and manipulate human language.
+3. **Large Language Model (LLM):** Advanced AI models capable of understanding and generating human-like text based on training from extensive text datasets.
+4. **User Interface (UI):** The space where interactions between humans and machines occur, involving the design of screens, buttons, icons, and other visual elements.
+5. **Backend Module:** The part of the software that does not come in direct contact with the users, responsible for managing the application's data and serving it to the UI.
+6. **Flask (Web Framework):** A lightweight WSGI web application framework in Python, used for developing web applications.
+7. **API (Application Programming Interface):** A set of rules that allow different software entities to communicate with each other.
+8. **Database Connector:** A software library providing an interface for users to connect to a database server.
+9. **TailWindCSS:** A utility-first CSS framework for creating custom designs without leaving your HTML.
+10. **HTMX:** A modern JavaScript library that allows web pages to be updated asynchronously by exchanging small amounts of data with the server behind the scenes.
+11. **Data Privacy:** The aspect of data protection focused on the proper handling of sensitive information, particularly personal data.
+12. **NoSQL Databases:** A type of database that provides a mechanism for storage and retrieval of data modeled in means other than the tabular relations used in relational databases.
+13. **JavaScript:** A programming language commonly used to create interactive effects within web browsers.
+14. **HTML/CSS:** Standard markup languages for creating web pages and web applications.
+
+Adding these terms to your glossary will help provide clarity and aid in understanding for readers who might not be familiar with these specific technical concepts.
 
 2\. General Description
 =======================
@@ -319,288 +336,113 @@ Dependencies: None
 4\. System Architecture
 =======================
 
-The architecture of ChatSQL is designed to be modular, flexible, and scalable, emphasizing simplicity and efficiency in its components. Here is a high-level overview of the anticipated system architecture:
-
-4.1 User Interface (UI) Module:
-
-Description: The UI module handles user interactions, providing a seamless and intuitive interface for users to communicate with ChatSQL.
-
-Components:
-
-HTML/CSS for layout and styling.
-
-Javascript for dynamic updates without full page reloads.
-
-TailWindCSS for streamlined styling.
-
-Interaction:
-
-Receives user queries and displays results.
-
-Communicates with the Backend Module for data retrieval.
-
-4.2 Backend Module:
-
-Description: The Backend Module serves as the core of ChatSQL, managing the conversion of natural language to SQL, querying the Large Language Model (LLM), and interacting with the database.
-
-Components:
-
-Flask framework for Python, handling HTTP requests and responses.
-
-Large Language Model (LLM) for natural language to SQL conversion.
-
-Database connector for communication with selected databases.
-
-Interaction:
-
-Receives user queries from the UI Module.
-
-Utilizes the LLM for natural language to SQL conversion.
-
-Executes SQL queries on the chosen database.
-
-Sends results back to the UI Module.
-
-4.3 Natural Language Processing (NLP) Module:
-
-Description: The NLP Module focuses on interpreting and understanding user queries in natural language.
-
-Components:
-
-Natural Language Processing algorithms and libraries.
-
-Interaction:
-
-Integrates with the Backend Module to provide accurate conversion from natural language to SQL.
-
-Handles complex queries and table relationships.
-
-4.4 Security Module:
-
-Description: The Security Module ensures data privacy and protects against unauthorized modifications.
-
-Components:
-
-User authentication mechanisms.
-
-Security protocols to restrict database operations.
-
-Interaction:
-
-Integrates with the Backend Module to enforce read-only operations.
-
-Validates user access rights.
-
-4.5 Database Module:
-
-Description: The Database Module manages the connection to various databases and executes SQL queries.
-
-Components:
-
-Database connector libraries.
-
-Database-specific drivers.
-
-Interaction:
-
-Communicates with the Backend Module to execute SQL queries.
-
-Retrieves data from the database.
-
-4.6 External Services:
-
-Description: External services, if any, may include third-party tools or APIs that enhance functionality.
-
-Components:
-
-Potential integration with Prisma DB services for visualization.
-
-LLM API for natural language to SQL conversion.
-
-Interaction:
-
-May involve API calls for additional functionalities.
-
-Enhances system capabilities through external tools.
-
-4.7 Reused or 3rd Party Components:
-
-HTMX: Utilized in the UI Module for dynamic updates without full page reloads.
-
-TailWindCSS: Employed for streamlined styling in the UI Module.
-
-Flask: Utilized as the web framework for the Backend Module.
-
-Large Language Model (LLM): Integrated into the NLP Module for natural language to SQL conversion.
-
-Third-party database connectors: Used in the Database Module for compatibility with various database types.
-
-4.8 Communication Flow:
-
-User Query:
-
-User interacts with the UI Module, posing queries in natural language.
-
-NLP Conversion:
-
-The UI Module sends user queries to the NLP Module for conversion.
-
-SQL Generation:
-
-The NLP Module converts queries into SQL and sends them to the Backend Module.
-
-Database Interaction:
-
-The Backend Module interacts with the Database Module to execute SQL queries.
-
-Security Checks:
-
-The Security Module ensures read-only operations and validates user access rights.
-
-Result Presentation:
-
-The Backend Module sends query results back to the UI Module for presentation to the user.
+The architecture of ChatSQL is designed to be modular, flexible, and scalable, with a focus on simplicity and efficiency in its components.
+
+## 4.1 User Interface (UI) Module
+- **Description:** Handles user interactions, offering a seamless and intuitive interface for communication with ChatSQL.
+- **Components:**
+  - HTML/CSS for layout and styling.
+  - Javascript for dynamic updates.
+  - TailWindCSS for streamlined styling.
+- **Interaction:**
+  - Receives user queries and displays results.
+  - Communicates with the Backend Module for data retrieval.
+
+## 4.2 Backend Module
+- **Description:** Serves as ChatSQL's core, managing natural language to SQL conversion and database interactions.
+- **Components:**
+  - Flask framework for handling HTTP requests.
+  - Large Language Model (LLM) for query conversion.
+  - Database connector for database communication.
+- **Interaction:**
+  - Receives queries from the UI Module.
+  - Uses LLM for query conversion.
+  - Executes SQL queries and sends results back to the UI.
+
+## 4.3 Natural Language Processing (NLP) Module
+- **Description:** Focuses on interpreting user queries in natural language.
+- **Components:**
+  - Natural Language Processing algorithms and libraries.
+- **Interaction:**
+  - Integrates with Backend Module for accurate query conversion.
+
+## 4.4 Security Module
+- **Description:** Ensures data privacy and protects against unauthorized changes.
+- **Components:**
+  - User authentication mechanisms.
+  - Security protocols for database operations.
+- **Interaction:**
+  - Integrates with Backend Module for operation validation.
+
+## 4.5 Database Module
+- **Description:** Manages connections to various databases and executes SQL queries.
+- **Components:**
+  - Database connector libraries and drivers.
+- **Interaction:**
+  - Communicates with Backend Module to execute and retrieve data.
+
+## 4.6 External Services
+- **Description:** May include third-party tools or APIs for added functionality.
+- **Components:**
+  - Potential Prisma DB services for visualization.
+  - LLM API for query conversion.
+- **Interaction:**
+  - API calls for additional functionalities.
+
+## 4.7 Reused or 3rd Party Components
+- HTMX for dynamic UI updates.
+- TailWindCSS for UI styling.
+- Flask as the web framework.
+- Large Language Model (LLM) for query conversion.
+- Third-party database connectors.
+
+## 4.8 Communication Flow
+1. **User Query:** User poses queries in natural language via the UI.
+2. **NLP Conversion:** UI sends queries to NLP for conversion.
+3. **SQL Generation:** NLP converts to SQL and sends to Backend.
+4. **Database Interaction:** Backend interacts with Database Module.
+5. **Security Checks:** Security Module validates operations.
+6. **Result Presentation:** Backend sends results back to UI.
 
 5\. High-Level Design
 =====================
 
-This section should set out the high-level design of the system. It should include one or more system models showing the relationship between system components and the systems and its environment. These might be object-models, DFD, etc.
-
-5.1 System Model
-
-The high-level design of ChatSQL is represented through a system model that illustrates the relationships between key components and their interactions with the system and its environment.
-
-System Model
-
-Components:
-
-User Interface (UI):
-
-Receives user queries.
-
-Displays results to the user.
-
-Natural Language Processing (NLP) Module:
-
-Interprets user queries in natural language.
-
-Converts queries to SQL.
-
-Backend Module:
-
-Orchestrates the overall system functionality.
-
-Manages communication between UI, NLP, Security, and Database Modules.
-
-Executes SQL queries.
-
-Security Module:
-
-Ensures data privacy and security.
-
-Validates user access rights.
-
-Database Module:
-
-Connects to various databases.
-
-Executes SQL queries.
-
-Retrieves and stores data.
-
-External Services:
-
-Integrates with third-party tools or APIs for enhanced functionality.
-
-5.2 Data Flow Diagram (DFD)
-
-The Data Flow Diagram provides a visual representation of the flow of data within the ChatSQL system.
-
-Data Flow Diagram
-
-Key Components:
-
-User Interaction:
-
-Users interact with the system by posing queries through the UI.
-
-SQL Generation:
-
-Database Interaction:
-
-The Backend Module communicates with the Database Module to execute SQL queries.
-
-Security Checks:
-
-The Security Module ensures read-only operations and validates user access rights.
-
-Result Presentation:
-
-The Backend Module sends query results to the UI for presentation to the user.
-
-5.3 Object Model
-
-The Object Model provides an overview of the key objects and their relationships within the system.
-
-Object Model
-
-Key Objects:
-
-User:
-
-Represents individuals interacting with the system.
-
-Query:
-
-Represents user queries in natural language.
-
-SQL Statement:
-
-Represents the SQL generated from user queries.
-
-Database:
-
-Represents the various databases available for querying.
-
-Result Set:
-
-Represents the data retrieved from the database in response to user queries.
-
-Security Token:
-
-Represents authentication and user access rights.
-
-5.4 Interaction Flow
-
-The Interaction Flow diagram outlines the step-by-step flow of actions and communication between system components during a typical user interaction.
-
-Interaction Flow
-
-Interaction Steps:
-
-User Query:
-
-User interacts with the UI, posing a query.
-
-NLP Conversion:
-
-The UI sends the user query to the NLP Module.
-
-SQL Generation:
-
-The NLP Module converts the query into an SQL statement.
-
-Database Interaction:
-
-The Backend Module communicates with the Database Module to execute the SQL.
-
-Security Checks:
-
-The Security Module validates user access rights.
-
-Result Presentation:
-
-The Backend Module sends query results to the UI for presentation to the user.
+This section outlines the high-level design of ChatSQL through system models showing the relationship between components.
+
+## 5.1 System Model
+- **Components:**
+  - **User Interface (UI):** Receives and displays queries and results.
+  - **Natural Language Processing (NLP) Module:** Interprets and converts queries.
+  - **Backend Module:** Orchestrates functionality and manages communication.
+  - **Security Module:** Ensures data security and user access validation.
+  - **Database Module:** Connects to and queries databases.
+  - **External Services:** Integrates with third-party tools or APIs.
+
+## 5.2 Data Flow Diagram (DFD)
+- **Key Components:**
+  - **User Interaction:** Users query through UI.
+  - **SQL Generation:** Conversion to SQL for database interaction.
+  - **Database Interaction:** Backend communicates with Database Module.
+  - **Security Checks:** Security Module ensures safe operations.
+  - **Result Presentation:** Backend presents results via UI.
+
+## 5.3 Object Model
+- **Key Objects:**
+  - **User:** Individuals using the system.
+  - **Query:** User queries in natural language.
+  - **SQL Statement:** SQL version of user queries.
+  - **Database:** Various databases available.
+  - **Result Set:** Data retrieved in response to queries.
+  - **Security Token:** User authentication and access rights.
+
+## 5.4 Interaction Flow
+- **Interaction Steps:**
+  1. **User Query:** Interaction via UI.
+  2. **NLP Conversion:** UI sends query to NLP.
+  3. **SQL Generation:** NLP converts to SQL.
+  4. **Database Interaction:** Backend and Database Module communication.
+  5. **Security Checks:** Security Module validation.
+  6. **Result Presentation:** Backend presents results to UI.
 
 6\. Preliminary Schedule
 ========================
