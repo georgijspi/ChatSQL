@@ -1,9 +1,8 @@
-   3YPFunctionalSpecification code{white-space: pre-wrap;} span.smallcaps{font-variant: small-caps;} span.underline{text-decoration: underline;} div.column{display: inline-block; vertical-align: top; width: 50%;} div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;} ul.task-list{list-style: none;}
 
-CA326  
-ChatSQL
+# CA326  
+# ChatSQL
 
-Functional Specification Document
+# Functional Specification Document
 
 Georgijs Pitkevics
 
@@ -417,73 +416,7 @@ This section outlines the high-level design of ChatSQL through system models sho
   - **Database Module:** Connects to and queries databases.
   - **External Services:** Integrates with third-party tools or APIs.
 
-<div hidden>
-@startuml
-class User {
-  +ID: int
-  +name: String
-  +email: String
-}
-
-class Query {
-  +ID: int
-  +text: String
-}
-
-class SQLStatement {
-  +ID: int
-  +text: String
-}
-
-class SecurityLayer {
-  +rule: String
-  +approve: Boolean
-}
-
-class Database {
-  +ID: int
-  +name: String
-}
-
-class ResultSet {
-  +ID: int
-  +data: String
-}
-
-class UserInterface {
-  +displayQueryResults(result: ResultSet): void
-}
-
-class NaturalLanguageProcessing {
-  +convertToSQL(query: Query): SQLStatement
-}
-
-class Backend {
-  +executeSQL(sql: SQLStatement, database: Database, user: User): ResultSet
-}
-
-class SecurityModule {
-  +authenticateUser(user: User): boolean
-}
-
-class DatabaseModule {
-  +connectToDatabase(database: Database): void
-  +executeQuery(sql: SQLStatement): ResultSet
-}
-
-User --|> Query
-Query --|> SQLStatement
-SQLStatement --|> SecurityLayer
-SecurityLayer --|> Database
-ResultSet --|> Database
-ResultSet --|> Query
-UserInterface -- Backend
-Backend --|> SecurityModule
-Backend --|> DatabaseModule
-NaturalLanguageProcessing --|> Backend
-@enduml
-<div>
-![](system-model.svg)
+![System Model](system-model.svg)
 
 
 
@@ -495,55 +428,7 @@ NaturalLanguageProcessing --|> Backend
   - **Security Checks:** Security Module ensures safe operations.
   - **Result Presentation:** Backend presents results via UI.
 
-<div hidden>
-```
-@startuml
-' Define components
-class User {
-    User
-}
-class UserInterface {
-    User Interface
-}
-class ChatBotInterface {
-    Natural Language Processing
-}
-class LargeLanguageModel {
-    Large Language Model
-}
-class BackendModule {
-    Backend Module
-}
-class DatabaseModule {
-    Database Module
-}
-class SecurityModule {
-    Security Module
-}
-
-' Define stereotypes
-class User <<Actor>>
-class UserInterface <<UI>>
-class ChatBotInterface <<Chatbot>>
-class LargeLanguageModel <<LLM>>
-class BackendModule <<Process>>
-class DatabaseModule <<Database>>
-class SecurityModule <<Security>>
-
-' Define relationships
-User -down-> UserInterface : "Enters Queries with Table Names"
-UserInterface -right-> ChatBotInterface : "User Queries in Natural Language"
-ChatBotInterface -right-> LargeLanguageModel : "Analyzes Queries and Database Info"
-LargeLanguageModel -down-> BackendModule : "Structured SQL Query"
-BackendModule -down-> SecurityModule : "SQL Statement for Security Check"
-SecurityModule -right-> DatabaseModule : "Execute SQL Query (if safe)"
-DatabaseModule -up-> BackendModule : "Query Results"
-BackendModule -up-> UserInterface : "Results and Feedback to User"
-@enduml
-```
-</div>
-
-![](dfd.svg)
+![Data Flow Diagram](dfd.svg)
 
 
 ## 5.3 Object Model
