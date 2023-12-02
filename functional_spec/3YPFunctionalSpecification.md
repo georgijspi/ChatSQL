@@ -417,7 +417,7 @@ This section outlines the high-level design of ChatSQL through system models sho
   - **Database Module:** Connects to and queries databases.
   - **External Services:** Integrates with third-party tools or APIs.
 
-<--
+<div hidden>
 @startuml
 class User {
   +ID: int
@@ -482,8 +482,7 @@ Backend --|> SecurityModule
 Backend --|> DatabaseModule
 NaturalLanguageProcessing --|> Backend
 @enduml
--->
-
+<div>
 ![](system-model.svg)
 
 
