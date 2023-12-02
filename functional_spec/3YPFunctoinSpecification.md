@@ -16,45 +16,44 @@ Chee Hin Choa
 0\. Table of contents
 =====================
 
-[0\. Table of contents](#h.fnnvelea07rg)        [1](#h.fnnvelea07rg)
+0\. Table of contents
 
-[1\. Introduction](#h.139k4md7w1yu)        [1](#h.139k4md7w1yu)
+1\. Introduction
 
-[1.1 Overview](#h.1d0m06h1nkhu)        [2](#h.1d0m06h1nkhu)
+1.1 Overview
 
-[1.2 Business Context](#h.o4hgq1sjr4ub)        [2](#h.o4hgq1sjr4ub)
+1.2 Business Context
 
-[1.3 Glossary](#h.x47dfdtcrak4)        [2](#h.x47dfdtcrak4)
+1.3 Glossary
 
-[2\. General Description](#h.qd4at0ke2h79)        [2](#h.qd4at0ke2h79)
+2\. General Description
 
-[2.1 Product / System Functions](#h.mgbhkq8ahx90)        [3](#h.mgbhkq8ahx90)
+2.1 Product / System Functions
+2.2 User Characteristics and Objectives
 
-[2.2 User Characteristics and Objectives](#h.lbye5w296qfd)        [3](#h.lbye5w296qfd)
+2.3 Operational Scenarios
 
-[2.3 Operational Scenarios](#h.k43acux1u5zs)        [4](#h.k43acux1u5zs)
+2.4 Constraints
 
-[2.4 Constraints](#h.zhmaq8s278k7)        [5](#h.zhmaq8s278k7)
+3\. Functional Requirements
 
-[3\. Functional Requirements](#h.8iaibjt2026s)        [6](#h.8iaibjt2026s)
+3.1 User Interaction
 
-[3.1 User Interaction](#h.hsu6k91ws6qn)        [7](#h.hsu6k91ws6qn)
+3.2 Natural Language Processing (NLP)
 
-[3.2 Natural Language Processing (NLP)](#h.c5x4gzkcy2f9)        [7](#h.c5x4gzkcy2f9)
+3.3 Data Retrieval
 
-[3.3 Data Retrieval](#h.w6nf2lte59yb)        [8](#h.w6nf2lte59yb)
+3.4 Data Privacy and Security
 
-[3.4 Data Privacy and Security](#h.g7o733r8yk6a)        [8](#h.g7o733r8yk6a)
+3.5 Additional Features
 
-[3.5 Additional Features](#h.do634jekmob6)        [9](#h.do634jekmob6)
+4\. System Architecture
 
-[4\. System Architecture](#h.3ei66bw8x0jb)        [10](#h.3ei66bw8x0jb)
+5\. High-Level Design
 
-[5\. High-Level Design](#h.sezggz2kqkbg)        [15](#h.sezggz2kqkbg)
+6\. Preliminary Schedule
 
-[6\. Preliminary Schedule](#h.bvnvssp3g8n)        [20](#h.bvnvssp3g8n)
-
-[7\. Appendices](#h.qffi6xv1kj3n)        [21](#h.qffi6xv1kj3n)
+7\. Appendices
 
 1\. Introduction
 
@@ -417,6 +416,78 @@ This section outlines the high-level design of ChatSQL through system models sho
   - **Security Module:** Ensures data security and user access validation.
   - **Database Module:** Connects to and queries databases.
   - **External Services:** Integrates with third-party tools or APIs.
+<div hidden>
+```
+@startuml
+class User {
+  +ID: int
+  +name: String
+  +email: String
+}
+
+class Query {
+  +ID: int
+  +text: String
+}
+
+class SQLStatement {
+  +ID: int
+  +text: String
+}
+
+class SecurityLayer {
+  +rule: String
+  +approve: Boolean
+}
+
+class Database {
+  +ID: int
+  +name: String
+}
+
+class ResultSet {
+  +ID: int
+  +data: String
+}
+
+class UserInterface {
+  +displayQueryResults(result: ResultSet): void
+}
+
+class NaturalLanguageProcessing {
+  +convertToSQL(query: Query): SQLStatement
+}
+
+class Backend {
+  +executeSQL(sql: SQLStatement, database: Database, user: User): ResultSet
+}
+
+class SecurityModule {
+  +authenticateUser(user: User): boolean
+}
+
+class DatabaseModule {
+  +connectToDatabase(database: Database): void
+  +executeQuery(sql: SQLStatement): ResultSet
+}
+
+User --|> Query
+Query --|> SQLStatement
+SQLStatement --|> SecurityLayer
+SecurityLayer --|> Database
+ResultSet --|> Database
+ResultSet --|> Query
+UserInterface -- Backend
+Backend --|> SecurityModule
+Backend --|> DatabaseModule
+NaturalLanguageProcessing --|> Backend
+@enduml
+```
+</div>
+
+![](firstDiagram.svg)
+
+
 
 ## 5.2 Data Flow Diagram (DFD)
 - **Key Components:**
@@ -425,6 +496,57 @@ This section outlines the high-level design of ChatSQL through system models sho
   - **Database Interaction:** Backend communicates with Database Module.
   - **Security Checks:** Security Module ensures safe operations.
   - **Result Presentation:** Backend presents results via UI.
+
+<div hidden>
+```
+@startuml
+' Define components
+class User {
+    User
+}
+class UserInterface {
+    User Interface
+}
+class ChatBotInterface {
+    Natural Language Processing
+}
+class LargeLanguageModel {
+    Large Language Model
+}
+class BackendModule {
+    Backend Module
+}
+class DatabaseModule {
+    Database Module
+}
+class SecurityModule {
+    Security Module
+}
+
+' Define stereotypes
+class User <<Actor>>
+class UserInterface <<UI>>
+class ChatBotInterface <<Chatbot>>
+class LargeLanguageModel <<LLM>>
+class BackendModule <<Process>>
+class DatabaseModule <<Database>>
+class SecurityModule <<Security>>
+
+' Define relationships
+User -down-> UserInterface : "Enters Queries with Table Names"
+UserInterface -right-> ChatBotInterface : "User Queries in Natural Language"
+ChatBotInterface -right-> LargeLanguageModel : "Analyzes Queries and Database Info"
+LargeLanguageModel -down-> BackendModule : "Structured SQL Query"
+BackendModule -down-> SecurityModule : "SQL Statement for Security Check"
+SecurityModule -right-> DatabaseModule : "Execute SQL Query (if safe)"
+DatabaseModule -up-> BackendModule : "Query Results"
+BackendModule -up-> UserInterface : "Results and Feedback to User"
+@enduml
+```
+</div>
+
+![](dfd.svg)
+
 
 ## 5.3 Object Model
 - **Key Objects:**
