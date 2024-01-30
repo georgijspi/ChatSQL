@@ -1,0 +1,12 @@
+<!-- templates/chat_response.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex justify-center items-center h-screen">
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <p class="mb-4"><strong>You:</strong> {{ user_message }}</p>
+        <p class="mb-4"><strong>Bot:</strong> {{ bot_response }}</p>
+        <a href="/chat" class="text-primary-color">Back to Chat</a>
+    </div>
+</div>
+{% endblock %}

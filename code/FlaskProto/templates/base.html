@@ -1,0 +1,30 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatSQL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #fefae0;
+        }
+        .primary-color {
+            color: #d4a373;
+        }
+        .secondary-color {
+            background-color: #ccd5ae;
+        }
+    </style>
+</head>
+<body class="font-sans">
+    <header class="text-white bg-secondary-color p-4">
+        <h1 class="text-xl font-bold primary-color">ChatSQL</h1>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

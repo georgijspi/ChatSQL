@@ -53,18 +53,18 @@ def execute_sql_query(db_path, sql_query):
     except sqlite3.Error as e:
         return f"SQL Error: {e}"
 
+# Save chat history to a JSON file
+memory = ConversationBufferMemory(
+    chat_memory=FileChatMessageHistory("chat_history.json"),
+    memory_key="messages",
+    return_messages=True,
+)
+
 # Main execution
-if __name__ == "__main__":
+def process_chat_message(question):
     client = create_openai_client()
     db_path = "chinook.db"
     database_schema = get_database_schema(db_path)
-
-    # Save chat history to a JSON file
-    memory = ConversationBufferMemory(
-        chat_memory=FileChatMessageHistory("chat_history.json"),
-        memory_key="messages",
-        return_messages=True,
-    )
 
     # Initialize prompt templates for SQL query generation and natural language response
     question_prompt = ChatPromptTemplate(
@@ -100,31 +100,26 @@ if __name__ == "__main__":
 
     max_retries = 6
 
-    while True:
-        question = input("Usage: type 'quit' to exit chat\n>> ")
+    success = False
 
-        if question == "quit":
-            break
+    for attempt in range(max_retries):
+        question_result = question_chain(
+            {"question": f"Question: {question}\nDatabase Schema: {database_schema}"}
+        )
 
-        success = False
+        query_results = execute_sql_query(db_path, question_result["sql_query"])
+        print("\nQuery Results:\n", query_results)
 
-        for attempt in range(max_retries):
-            question_result = question_chain(
-                {"question": f"Question: {question}\nDatabase Schema: {database_schema}"}
-            )
+        if isinstance(query_results, str) and query_results.startswith("SQL Error"):
+            continue
 
-            query_results = execute_sql_query(db_path, question_result["sql_query"])
-            print("\nQuery Results:\n", query_results)
+        nlp_result = nlp_chain({"question": question, "query_results": query_results})
 
-            if isinstance(query_results, str) and query_results.startswith("SQL Error"):
-                continue
+        print("\nFinal Answer:\n")
+        print(nlp_result["nlp_response"])
+        return nlp_result["nlp_response"]
+        success = True
+        break
 
-            nlp_result = nlp_chain({"question": question, "query_results": query_results})
-
-            print("\nFinal Answer:\n")
-            print(nlp_result["nlp_response"])
-            success = True
-            break
-
-        if not success:
-            print("\nFailed to generate a valid SQL query after maximum retries.\n")
+    if not success:
+        print("\nFailed to generate a valid SQL query after maximum retries.\n")

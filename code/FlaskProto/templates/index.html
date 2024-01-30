@@ -1,0 +1,70 @@
+<!-- templates/index.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4">
+    <section class="my-12">
+        <h2 class="text-3xl font-bold primary-color mb-4">Welcome to ChatSQL</h2>
+        <p class="mb-6">ChatSQL is an interactive chat application that allows you to generate SQL queries from natural language. Powered by AI, it simplifies database interactions.</p>
+        
+        <!-- Sample Chat Display -->
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+            <div class="mb-4 h-48 overflow-y-auto">
+                <!-- Static Sample Conversation Entries -->
+                <div class="text-right">
+                    <span class="inline-block bg-blue-200 rounded px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">What is the total revenue?</span>
+                </div>
+                <div class="text-left">
+                    <span class="inline-block bg-green-200 rounded px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">The total revenue is $1,234,567.</span>
+                </div>
+                <!-- Add more static entries as needed -->
+            </div>
+        </div>
+
+        <!-- Tutorial Steps Pointing to Chat -->
+        <div class="bg-secondary-color p-6 rounded-lg mb-6">
+            <h3 class="text-2xl font-bold mb-3">How to Use</h3>
+            <ul class="list-disc pl-5">
+                <li>Go to the chat page and type your question like "What is the total revenue?".</li>
+                <li>The bot will respond with the generated SQL query result, such as "The total revenue is $1,234,567."</li>
+                <li>Review the query results displayed by the bot in the chat interface.</li>
+            </ul>
+        </div>
+
+        <!-- "Try Now" Button -->
+        <div class="text-center">
+            <a href="/chat" style="background-color: #d4a373;" class="hover:bg-opacity-75 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block transition duration-300 ease-in-out relative try-now-btn">
+                Try Now
+            </a>
+        </div>
+    </section>
+</div>
+
+<!-- Shimmer Animation Styles -->
+<style>
+    .try-now-btn {
+        position: relative;
+        overflow: hidden; /* Ensure the shimmer doesn't extend beyond the button */
+    }
+
+    .try-now-btn:hover::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+        animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+</style>
+{% endblock %}
