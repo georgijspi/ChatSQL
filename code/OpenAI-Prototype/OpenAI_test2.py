@@ -1,19 +1,21 @@
 from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
-from langchain.prompts import MessagesPlaceholder, HumanMessagePromptTemplate, ChatPromptTemplate
 from langchain.memory import ConversationBufferMemory, FileChatMessageHistory
-from dotenv import load_dotenv
+from langchain.prompts import MessagesPlaceholder, HumanMessagePromptTemplate, ChatPromptTemplate
+
 import sqlite3
 import sqlparse
 import json
-import warnings
-from langchain_core._api.deprecation import LangChainDeprecationWarning
 
-# Ignore specific deprecation warnings from langchain_core
-warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
-
+from dotenv import load_dotenv
 
 load_dotenv()
+
+# ignore deprecation warning from langchain
+import warnings
+from langchain_core._api.deprecation import LangChainDeprecationWarning
+warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
+
 
 # Create and initialize the OpenAI client
 def create_openai_client():
@@ -36,19 +38,10 @@ def get_database_schema(db_path):
             schema_info.append(f"{table_name} (Primary Key: {', '.join(primary_keys)})")
 
         conn.close()
-        return "filename: chinook.db, "+', '.join(schema_info)
+        return ', '.join(schema_info)
+        # return "filename: chinook.db, "+', '.join(schema_info)
     except Exception as e:
         return f"Error reading database schema: {e}"
-
-# Format the raw SQL query for better readability using sqlparse
-def format_sql_query(raw_sql):
-    if raw_sql.startswith("```sql"):
-        raw_sql = raw_sql[6:]
-    if raw_sql.endswith("```"):
-        raw_sql = raw_sql[:-3]
-    raw_sql = raw_sql.strip()
-    formatted_sql = sqlparse.format(raw_sql, reindent=True, keyword_case='upper')
-    return formatted_sql
 
 # Function to execute a SQL query and return results
 def execute_sql_query(db_path, sql_query):
@@ -62,27 +55,28 @@ def execute_sql_query(db_path, sql_query):
     except sqlite3.Error as e:
         return f"SQL Error: {e}"
 
-
 # Main execution
 if __name__ == "__main__":
     client = create_openai_client()
     db_path = "chinook.db"
     database_schema = get_database_schema(db_path)
 
+    # save chat history to json file
     memory = ConversationBufferMemory(
         chat_memory=FileChatMessageHistory("chat_history.json"),
-        memory_key="messages",
+        memory_key="messages", 
         return_messages=True,
     )
 
+    # initialize prompt template
     prompt = ChatPromptTemplate(
         input_variables=["content", "messages"],
         messages=[
             MessagesPlaceholder(variable_name="messages"),
             HumanMessagePromptTemplate.from_template(
-                "You are a data analyst. Generate SQL queries from natural language descriptions. Provide only the SQL query in response, without explanations or additional text"
-                "Question: {{question}} Database Schema: {{database_schema}} Response: {content}"
-            ),
+                    "You are a data analyst. Generate SQL queries from natural language descriptions. Provide only the SQL query in response, without explanations or additional text"
+                    "Question: {{question}} Response: {content}"
+                ),
         ],
     )
 
@@ -92,18 +86,19 @@ if __name__ == "__main__":
         memory=memory,
     )
 
+    print(database_schema)
+
     while True:
-        content = input("Usage: type 'quit' to exit chat\n>> ")
-
-        if content == "quit":
+        question = input("Usage: type 'quit' to exit chat\n>> ")
+        
+        if question == "quit":
             break
+        # print(f"Question: {question} Database Schema: {database_schema}") # debug prompt
+        
+        result = chain({"content": f"Question: {question}\nDatabase Schema: {database_schema}"})
 
-        result = chain({"content": content})
-
-        # Format the SQL query
-        formatted_query = format_sql_query(result['text'])
-        print("\nGenerated SQL Query:\n", formatted_query)
+        print(result["text"])
 
         # Execute the SQL query and print results
-        query_results = execute_sql_query(db_path, formatted_query)
+        query_results = execute_sql_query(db_path, result["text"])
         print("\nQuery Results:\n", query_results)
