@@ -9,13 +9,12 @@ import json
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 # ignore deprecation warning from langchain
 import warnings
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)
 
+load_dotenv()
 
 # Create and initialize the OpenAI client
 def create_openai_client():
@@ -34,14 +33,14 @@ def get_database_schema(db_path):
             table_name = table[0]
             cursor.execute(f"PRAGMA table_info({table_name});")
             columns = cursor.fetchall()
-            primary_keys = [col[1] for col in columns if col[5] == 1]
-            schema_info.append(f"{table_name} (Primary Key: {', '.join(primary_keys)})")
+            column_names = [col[1] for col in columns]  # Fetch only column names
+            schema_info.append(f"{table_name}: {', '.join(column_names)}")
 
         conn.close()
-        return ', '.join(schema_info)
-        # return "filename: chinook.db, "+', '.join(schema_info)
+        return '; '.join(schema_info)  # Use a semi-colon to separate each table's schema
     except Exception as e:
         return f"Error reading database schema: {e}"
+
 
 # Function to execute a SQL query and return results
 def execute_sql_query(db_path, sql_query):
@@ -69,36 +68,69 @@ if __name__ == "__main__":
     )
 
     # initialize prompt template
-    prompt = ChatPromptTemplate(
-        input_variables=["content", "messages"],
+    question_prompt = ChatPromptTemplate(
+        input_variables=["question"],
         messages=[
-            MessagesPlaceholder(variable_name="messages"),
             HumanMessagePromptTemplate.from_template(
                     "You are a data analyst. Generate SQL queries from natural language descriptions. Provide only the SQL query in response, without explanations or additional text"
-                    "Question: {{question}} Response: {content}"
+                    "Question: {question}Response: "
                 ),
         ],
     )
 
-    chain = LLMChain(
+    question_chain = LLMChain(
         llm=client,
-        prompt=prompt,
-        memory=memory,
+        prompt=question_prompt,
+        output_key="sql_query",
     )
+
+    # initialize prompt template
+    nlp_prompt = ChatPromptTemplate(
+        input_variables=["question", "query_results"],
+        messages=[
+            HumanMessagePromptTemplate.from_template(
+                    "You are a data analyst. Generate a natural language response from the given Question: {question} \nand it's SQL output: {query_results}. Provide only the natural language response, without explanations or additional text"
+                ),
+        ],
+    )
+
+    nlp_chain = LLMChain(
+        llm=client,
+        prompt=nlp_prompt,
+        output_key="nlp_response",
+    )
+
+
 
     print(database_schema)
 
-    while True:
-        question = input("Usage: type 'quit' to exit chat\n>> ")
-        
-        if question == "quit":
-            break
-        # print(f"Question: {question} Database Schema: {database_schema}") # debug prompt
-        
-        result = chain({"content": f"Question: {question}\nDatabase Schema: {database_schema}"})
+max_retries = 3
 
-        print(result["text"])
+while True:
+    question = input("Usage: type 'quit' to exit chat\n>> ")
+    
+    if question == "quit":
+        break
+    
+    success = False  # Flag to indicate successful query execution
 
-        # Execute the SQL query and print results
-        query_results = execute_sql_query(db_path, result["text"])
+    for attempt in range(max_retries):
+        question_result = question_chain({"question": f"Question: {question}\nDatabase Schema: {database_schema}"})
+        print(question_result["sql_query"])
+
+        query_results = execute_sql_query(db_path, question_result["sql_query"])
         print("\nQuery Results:\n", query_results)
+
+        # Check if query_results is an error message
+        if isinstance(query_results, str) and query_results.startswith("SQL Error"):
+            print("Attempting to regenerate SQL query...")
+            continue  # Retry generating the SQL query
+        else:
+            # If query_results is valid, process it further
+            nlp_result = nlp_chain({"question": question, "query_results": query_results})
+            print(nlp_result["nlp_response"])
+            success = True  # Successful query generation and processing
+            break  # Exit the retry loop as a valid query was generated and processed
+
+    if not success:
+        print("Failed to generate a valid SQL query after maximum retries.")
