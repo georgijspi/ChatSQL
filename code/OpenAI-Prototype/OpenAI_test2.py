@@ -102,9 +102,9 @@ if __name__ == "__main__":
 
 
 
-    print(database_schema)
+    # print(database_schema)
 
-max_retries = 3
+max_retries = 6
 
 while True:
     question = input("Usage: type 'quit' to exit chat\n>> ")
@@ -123,14 +123,16 @@ while True:
 
         # Check if query_results is an error message
         if isinstance(query_results, str) and query_results.startswith("SQL Error"):
-            print("Attempting to regenerate SQL query...")
+            print("\n---Attempting to regenerate SQL query---\n")
             continue  # Retry generating the SQL query
         else:
             # If query_results is valid, process it further
             nlp_result = nlp_chain({"question": question, "query_results": query_results})
+
+            print("\n Final Answer:\n")
             print(nlp_result["nlp_response"])
             success = True  # Successful query generation and processing
             break  # Exit the retry loop as a valid query was generated and processed
 
     if not success:
-        print("Failed to generate a valid SQL query after maximum retries.")
+        print("\nFailed to generate a valid SQL query after maximum retries.\n")
