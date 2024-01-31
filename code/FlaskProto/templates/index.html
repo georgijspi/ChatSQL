@@ -1,31 +1,30 @@
-<!-- templates/index.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="container mx-auto px-4">
-    <section class="my-12">
+    <section class="my-12 text-center">
         <h2 class="text-3xl font-bold primary-color mb-4">Welcome to ChatSQL</h2>
         <p class="mb-6">ChatSQL is an interactive chat application that allows you to generate SQL queries from natural language. Powered by AI, it simplifies database interactions.</p>
         
         <!-- Sample Chat Display -->
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
+        <div class="bg-secondary-color shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md mx-auto">
             <div class="mb-4 h-48 overflow-y-auto">
                 <!-- Static Sample Conversation Entries -->
                 <div class="text-right">
-                    <span class="inline-block bg-blue-200 rounded px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">What is the total revenue?</span>
+                    <span class="inline-block bg-blue-500 rounded px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">What is the total revenue?</span>
                 </div>
                 <div class="text-left">
-                    <span class="inline-block bg-green-200 rounded px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">The total revenue is $1,234,567.</span>
+                    <span class="inline-block bg-green-600 rounded px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">The total revenue is $1,234,567.</span>
                 </div>
                 <!-- Add more static entries as needed -->
             </div>
         </div>
 
-        <!-- Tutorial Steps Pointing to Chat -->
-        <div class="bg-secondary-color p-6 rounded-lg mb-6">
-            <h3 class="text-2xl font-bold mb-3">How to Use</h3>
-            <ul class="list-disc pl-5">
-                <li>Go to the chat page and type your question like "What is the total revenue?".</li>
+        <!-- Tutorial Steps -->
+        <div class="bg-secondary-color p-6 rounded-lg mb-6 mx-auto">
+            <h3 class="text-2xl font-bold mb-3 primary-color">How to Use</h3>
+            <ul class="list-disc pl-5 text-left mx-auto" style="max-width: 600px;">
+                <li>Go to the chat page and type your question like "What is the total revenue?"</li>
                 <li>The bot will respond with the generated SQL query result, such as "The total revenue is $1,234,567."</li>
                 <li>Review the query results displayed by the bot in the chat interface.</li>
             </ul>

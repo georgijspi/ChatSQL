@@ -18,10 +18,12 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <form action="/chat" method="post">
-            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="message" name="message" type="text" placeholder="Type your message">
-            <button class="bg-primary-color hover:bg-opacity-75 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4" type="submit">
-                Send
+        <form action="/chat" method="post" class="flex items-center bg-white rounded">
+            <input class="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="message" name="message" type="text" placeholder="Type your message">
+            <button class="bg-primary-color hover:bg-opacity-75 text-gray-700 font-bold p-2 rounded-r focus:outline-none focus:shadow-outline flex items-center" type="submit">                <!-- SVG for the send button with updated fill color for visibility -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 535.5 535.5" width="32" height="32" fill="#023047" class="ml-1 mr-2">
+                    <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75"/>
+                </svg>
             </button>
         </form>
     </div>
