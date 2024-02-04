@@ -61,10 +61,11 @@ memory = ConversationBufferMemory(
 )
 
 # Main execution
-def process_chat_message(question):
+def process_chat_message(question, db_path):
     client = create_openai_client()
-    db_path = "chinook.db"
+    # db_path = "chinook.db"
     database_schema = get_database_schema(db_path)
+    print(database_schema)
 
     # Initialize prompt templates for SQL query generation and natural language response
     question_prompt = ChatPromptTemplate(
@@ -106,7 +107,7 @@ def process_chat_message(question):
         question_result = question_chain(
             {"question": f"Question: {question}\nDatabase Schema: {database_schema}"}
         )
-
+        print("\nSQL Query:\n", question_result["sql_query"])
         query_results = execute_sql_query(db_path, question_result["sql_query"])
         print("\nQuery Results:\n", query_results)
 
