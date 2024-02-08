@@ -18,7 +18,7 @@ load_dotenv()
 
 # Create and initialize the OpenAI client
 def create_openai_client():
-    return ChatOpenAI(model_name="gpt-3.5-turbo")
+    return ChatOpenAI(model_name="gpt-3.5-turbo-0125")
 
 # Retrieve the database schema from an SQLite database
 def get_database_schema(db_path):
@@ -62,7 +62,7 @@ memory = ConversationBufferMemory(
 
 # Main execution
 def process_chat_message(question, db_path):
-    client = create_openai_client()
+    client = ChatOpenAI(model_name="gpt-3.5-turbo-0125")
     # db_path = "chinook.db"
     database_schema = get_database_schema(db_path)
     print(database_schema)

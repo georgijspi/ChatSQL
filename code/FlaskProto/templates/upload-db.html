@@ -17,13 +17,14 @@
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-md">
         <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Choose a Sample Database</h3>
         <div class="flex flex-col">
-            {% for i in range(1, 6) %}
-            <a href="{{ url_for('select_sample_db', db_name='sample_' ~ i ~ '.db') }}" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 transition duration-300 ease-in-out">
-                Sample {{ i }}
+            {% for db in sample_databases %}
+            <a href="{{ url_for('select_sample_db', db_name=db.name) }}" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 transition duration-300 ease-in-out">
+                {{ db.name }}
             </a>
             {% endfor %}
         </div>
     </div>
+
 </div>
 
 {% endblock %}

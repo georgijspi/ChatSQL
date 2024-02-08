@@ -1,12 +1,14 @@
 # from io import BytesIO # deprecated
 from flask import Flask, request, render_template, session, redirect, url_for
 from flask_session import Session  # You might need to install this package
-# from flask_sqlalchemy import SQLAlchemy # deprecated
+from flask_sqlalchemy import SQLAlchemy 
 
 from werkzeug.utils import secure_filename
 
 import os
 import chatbot
+
+from model import db, SampleDatabase
 
 app = Flask(__name__)
 
@@ -14,6 +16,38 @@ app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sample_databases.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+
+# Command to initialize the database
+@app.cli.command('init-db')
+def init_db():
+    db.create_all()
+    print("Initialized the database.")
+
+# Command to populate the database with sample databases
+@app.cli.command('populate-db')
+def populate_db():
+    # List of sample databases
+    sample_dbs = [
+        {'name': 'Covid Vaccination Information', 'description_path': "db-descriptions/sampleDB-1.html", 'path': 'db_sample/sample_1.sqlite3'},
+        {'name': 'Interactive Clue-Style Mystery Game Database', 'description_path': "db-descriptions/sampleDB-2.html", 'path': 'db_sample/sample_2.sqlite3'},
+        {'name': "World's Tallest Buildings Database", 'description_path': "db-descriptions/sampleDB-3.html", 'path': 'db_sample/sample_3.sqlite3'},
+        {'name': 'Comprehensive Music Store Database', 'description_path': "db-descriptions/sampleDB-4.html", 'path': 'db_sample/sample_4.db'},
+        # Add more samples as needed
+    ]
+
+    for sample_db in sample_dbs:
+        db_entry = SampleDatabase(name=sample_db['name'], 
+                                  description_path=sample_db['description_path'], 
+                                  path=sample_db['path'])
+        db.session.add(db_entry)
+    
+    db.session.commit()
+    print("Sample databases added to the database.")
 
 # database configuration
 UPLOAD_FOLDER = 'db_uploads'  # Make sure this directory exists
@@ -46,20 +80,18 @@ def upload_db():
             file.save(filepath)
             session['db_path'] = filepath
             return redirect(url_for('chat'))
-    return render_template('upload-db.html')
+
+    sample_databases = SampleDatabase.query.all()
+    return render_template('upload-db.html', sample_databases=sample_databases)
 
 @app.route("/select-sample-db/<db_name>")
 def select_sample_db(db_name):
-    # Remove the extension from db_name if it has one
-    base_name = db_name.rsplit('.', 1)[0]
+    # Query the database for the sample database with the given name
+    sample_db = SampleDatabase.query.filter_by(name=db_name).first()
 
-    # Check for various allowed database file extensions
-    for ext in ALLOWED_EXTENSIONS:
-        sample_db_filename = f"{base_name}.{ext}"
-        sample_db_path = os.path.join('db_sample', sample_db_filename)
-        if os.path.isfile(sample_db_path):
-            session['db_path'] = sample_db_path
-            return redirect(url_for('chat'))
+    if sample_db and os.path.isfile(sample_db.path):
+        session['db_path'] = sample_db.path
+        return redirect(url_for('chat'))
 
     return "Sample database not found.", 404
 
