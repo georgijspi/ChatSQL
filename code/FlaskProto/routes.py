@@ -8,6 +8,10 @@ from werkzeug.utils import secure_filename
 def allowed_file(filename, app):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+# Define RateLimitError exception
+class RateLimitError(Exception):
+    pass
+
 # Define routes
 def create_routes_blueprint(app):
     routes = Blueprint('routes', __name__)
@@ -33,6 +37,8 @@ def create_routes_blueprint(app):
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 session['db_path'] = filepath
+
+                session.pop('conversation', None)
                 return redirect(url_for('routes.chat'))
 
         sample_databases = SampleDatabase.query.all()
@@ -40,6 +46,9 @@ def create_routes_blueprint(app):
 
     @routes.route("/select-sample-db/<db_name>")
     def select_sample_db(db_name):
+        # Clear the conversation history
+        session.pop('conversation', None)
+        
         # Query the database for the sample database with the given name
         sample_db = SampleDatabase.query.filter_by(name=db_name).first()
 
@@ -50,18 +59,37 @@ def create_routes_blueprint(app):
         return "Sample database not found.", 404
 
 
+    # Your existing route definition
     @routes.route("/chat", methods=["GET", "POST"])
     def chat():
         if request.method == "POST":
             user_message = request.form["message"]
             db_path = session.get('db_path', 'chinook.db')  # Use the uploaded database if available
-            bot_response = chatbot.process_chat_message(user_message, db_path)
+            
+            try:
+                bot_response = chatbot.process_chat_message(user_message, db_path)
+            except RateLimitError as e:
+                # Render a template with the error message
+                return render_template("rate_limit_error.html", error=str(e))
 
             # Update conversation history
             if 'conversation' not in session:
                 session['conversation'] = []
             session['conversation'].append({"type": "user", "text": user_message})
             session['conversation'].append({"type": "bot", "text": bot_response})
+            session.modified = True
 
-        return render_template("chat.html", conversation=session.get('conversation', []))
+        # Pass the sample_db variable to the template context
+        sample_db = SampleDatabase.query.filter_by(path=session.get('db_path')).first()
+        if sample_db:
+            # Read the HTML file for the description
+            with open(sample_db.description_path, 'r') as file:
+                description_html = file.read()
+        else:
+            description_html = None
+
+        return render_template("chat.html", 
+                            conversation=session.get('conversation', []),
+                            sample_db=sample_db,
+                            description_html=description_html)
     return routes

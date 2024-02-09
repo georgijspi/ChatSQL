@@ -2,34 +2,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="flex justify-center items-center h-screen">
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md">
-        <div class="mb-4 h-96 overflow-y-auto">
-            <!-- conversation history -->
+<div class="flex flex-col md:flex-row h-screen w-full md:overflow-hidden relative">
+
+    <!-- Chat conversation container -->
+    <div class="md:w-3/5 w-full flex flex-col relative">
+        <!-- Chat history area -->
+        <div class="overflow-y-auto flex-grow">
+            <!-- Insert conversation history here -->
             {% for entry in conversation %}
                 {% if entry.type == 'user' %}
-                    <div class="text-right">
+                    <!-- User message -->
+                    <div class="text-right p-2">
                         <span class="inline-block bg-blue-200 rounded px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{ entry.text }}</span>
                     </div>
                 {% else %}
-                    <div class="text-left">
+                    <!-- Bot message -->
+                    <div class="text-left p-2">
                         <span class="inline-block bg-green-200 rounded px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{ entry.text }}</span>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
-        <form action="/chat" method="post" class="flex items-center bg-white rounded">
-            <input class="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none" id="message" name="message" type="text" placeholder="Type your message">
-            <button class="bg-primary-color hover:bg-opacity-75 text-gray-700 font-bold p-2 rounded-r focus:outline-none focus:shadow-outline flex items-center" type="submit">                <!-- SVG for the send button with updated fill color for visibility -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 535.5 535.5" width="32" height="32" fill="#023047" class="ml-1 mr-2">
-                    <polygon points="0,497.25 535.5,267.75 0,38.25 0,216.75 382.5,267.75 0,318.75"/>
-                </svg>
+    </div>
+
+    <!-- Chat input area -->
+    <div class="md:w-3/5 w-full bg-white p-4 border-t-2 fixed bottom-0">
+        <form action="/chat" method="post" class="flex w-full">
+            <input class="flex-1 border rounded-l px-4 py-2 text-gray-800" id="message" name="message" type="text" placeholder="Type your message">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r" type="submit">
+                Send
             </button>
         </form>
     </div>
+
+    <!-- Right side - Title and Description -->
+    <div class="md:w-2/5 w-full bg-white p-4 overflow-y-auto">
+        {% if sample_db %}
+            <!-- Database title -->
+            <h1 class="text-xl font-bold text-gray-900 mb-4">{{ sample_db.name }}</h1>
+            <!-- Database description -->
+            <div class="prose text-gray-800">{{ description_html|safe }}</div>
+        {% endif %}
+    </div>
+
 </div>
+
 <script>
-    var chatWindow = document.querySelector('.h-96');
+    // JavaScript to keep chat scrolled to bottom
+    var chatWindow = document.querySelector('.overflow-y-auto.flex-grow');
     chatWindow.scrollTop = chatWindow.scrollHeight;
 </script>
 
