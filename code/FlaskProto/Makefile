@@ -27,7 +27,8 @@ clean:
 
 # This target is used to execute commands within the virtual environment.
 # Usage: make run command="<command>"
-run:
-	@source $(VENV_DIR)/bin/activate; $(command)
+run: $(VENV_DIR)/bin/activate
+	@source $(VENV_DIR)/bin/activate; \
+	$(SHELL)
 
 .PHONY: default setup clean run

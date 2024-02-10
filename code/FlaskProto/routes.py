@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request
 from database import db, SampleDatabase
 import os
-import chatbot
+from chatbot import ChatbotProcessor
 from werkzeug.utils import secure_filename
 
 # Define the allowed_file function here
@@ -65,11 +65,13 @@ def create_routes_blueprint(app):
         if request.method == "POST":
             user_message = request.form["message"]
             db_path = session.get('db_path', 'chinook.db')  # Use the uploaded database if available
+
+            # Initialize the ChatbotProcessor with the database path
+            processor = ChatbotProcessor(db_path)
             
             try:
-                bot_response = chatbot.process_chat_message(user_message, db_path)
+                bot_response = processor.process_message(user_message)  # Call process_message instead of process_chat_message
             except RateLimitError as e:
-                # Render a template with the error message
                 return render_template("rate_limit_error.html", error=str(e))
 
             # Update conversation history
