@@ -32,11 +32,16 @@ def create_routes_blueprint(app):
                 return render_template('upload_db.html', error="No file part in the request")
             if file.filename == '':
                 return render_template('upload_db.html', error="No selected file")
-            if file and allowed_file(file.filename, app):  # Pass 'app' as an argument
+            if file and allowed_file(file.filename, app):
                 filename = secure_filename(file.filename)
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 session['db_path'] = filepath
+
+
+                # Clear memory and chat history
+                processor = ChatbotProcessor(filepath)
+                processor.reset_memory()
 
                 session.pop('conversation', None)
                 return redirect(url_for('routes.chat'))
@@ -46,12 +51,14 @@ def create_routes_blueprint(app):
 
     @routes.route("/select-sample-db/<db_name>")
     def select_sample_db(db_name):
-        # Clear the conversation history
         session.pop('conversation', None)
         
         # Query the database for the sample database with the given name
         sample_db = SampleDatabase.query.filter_by(name=db_name).first()
 
+        # Clear memory and chat history
+        processor = ChatbotProcessor(sample_db.path)
+        processor.reset_memory()
         if sample_db and os.path.isfile(sample_db.path):
             session['db_path'] = sample_db.path
             return redirect(url_for('routes.chat'))
@@ -70,7 +77,7 @@ def create_routes_blueprint(app):
             processor = ChatbotProcessor(db_path)
             
             try:
-                bot_response = processor.process_message(user_message)  # Call process_message instead of process_chat_message
+                bot_response = processor.process_message(user_message)
             except RateLimitError as e:
                 return render_template("rate_limit_error.html", error=str(e))
 
