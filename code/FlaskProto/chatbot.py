@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
-from langchain.memory import ConversationBufferMemory, FileChatMessageHistory
+from langchain.memory import ConversationSummaryBufferMemory, ChatMessageHistory
 from langchain.prompts import (
     MessagesPlaceholder,
     HumanMessagePromptTemplate,
@@ -61,9 +61,14 @@ def execute_sql_query(db_path, sql_query):
 # )
 
 class ChatbotProcessor:
-    def __init__(self, db_path, model_name="gpt-3.5-turbo-0125"):
+    def __init__(self, db_path, model_name="gpt-3.5-turbo-0125", max_token_limit=16385):
         self.db_path = db_path
         self.client = ChatOpenAI(model_name=model_name)
+        self.memory = ConversationSummaryBufferMemory(llm=self.client, 
+                                                    max_token_limit=max_token_limit,
+                                                    memory_key="history",
+                                                    return_messages=True,
+                                                    )
 
     def get_database_schema(self):
             try:
@@ -77,11 +82,11 @@ class ChatbotProcessor:
                     table_name = table[0]
                     cursor.execute(f"PRAGMA table_info({table_name});")
                     columns = cursor.fetchall()
-                    column_names = [col[1] for col in columns]  # Fetch only column names
+                    column_names = [col[1] for col in columns]
                     schema_info.append(f"{table_name}: {', '.join(column_names)}")
 
                 conn.close()
-                return '; '.join(schema_info)  # Use a semi-colon to separate each table's schema
+                return '; '.join(schema_info)
             except Exception as e:
                 return f"Error reading database schema: {e}"
 
@@ -97,15 +102,15 @@ class ChatbotProcessor:
                 return f"SQL Error: {e}"
 
     def process_message(self, question):
-    # Core logic from process_chat_message
-        database_schema = self.get_database_schema()
         
-        # Initialize prompt templates for SQL query generation and natural language response
+        database_schema = self.get_database_schema()
+
+        # Define prompt templates
         question_prompt = ChatPromptTemplate(
-            input_variables=["question"],
+            input_variables=["history", "question"],
             messages=[
                 HumanMessagePromptTemplate.from_template(
-                    "You are a data analyst. Generate SQL queries from natural language descriptions. Provide only the SQL query in response, without explanations or additional text"
+                    "{history}\nYou are a data analyst. Generate SQL queries from natural language descriptions. Provide only the SQL query in response, without explanations or additional text"
                     "Question: {question}Response: "
                 ),
             ],
@@ -115,6 +120,7 @@ class ChatbotProcessor:
             llm=self.client,
             prompt=question_prompt,
             output_key="sql_query",
+            memory = self.memory,
         )
 
         nlp_prompt = ChatPromptTemplate(
