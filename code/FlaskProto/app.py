@@ -18,16 +18,14 @@ def init_db():
     db.create_all()
     print("Initialized the database.")
 
-# Command to populate the database with sample databases
+# Command to populate the SQLAlchemy database with sample databases
 @app.cli.command('populate-db')
 def populate_db():
-    # List of sample databases
     sample_dbs = [
         {'name': 'Covid Vaccination Information', 'description_path': "db-descriptions/sampleDB-1.html", 'path': 'db_sample/sample_1.sqlite3'},
         {'name': 'Interactive Clue-Style Mystery Game Database', 'description_path': "db-descriptions/sampleDB-2.html", 'path': 'db_sample/sample_2.sqlite3'},
         {'name': "World's Tallest Buildings Database", 'description_path': "db-descriptions/sampleDB-3.html", 'path': 'db_sample/sample_3.sqlite3'},
         {'name': 'Comprehensive Music Store Database', 'description_path': "db-descriptions/sampleDB-4.html", 'path': 'db_sample/sample_4.db'},
-        # Add more samples as needed
     ]
 
     for sample_db in sample_dbs:

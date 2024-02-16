@@ -1,5 +1,5 @@
 # database configuration
-UPLOAD_FOLDER = 'db_uploads'  # Make sure this directory exists
+UPLOAD_FOLDER = 'db_uploads'
 ALLOWED_EXTENSIONS = {'db', 'sqlite', 'sqlite3'}
 
 # flask session configuration

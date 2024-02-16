@@ -65,16 +65,18 @@ def create_routes_blueprint(app):
 
         return "Sample database not found.", 404
 
-
-    # Your existing route definition
     @routes.route("/chat", methods=["GET", "POST"])
     def chat():
+        allow_db_edit = session.get('allow_db_edit', False)
+
         if request.method == "POST":
             user_message = request.form["message"]
-            db_path = session.get('db_path', 'chinook.db')  # Use the uploaded database if available
+            allow_db_edit = request.form.get("allow_db_edit_hidden", "false") == "true"
+            db_path = session.get('db_path', 'chinook.db') 
 
-            # Initialize the ChatbotProcessor with the database path
-            processor = ChatbotProcessor(db_path)
+            print("Allow DB Edit:", allow_db_edit)  # Add this line to check the value
+
+            processor = ChatbotProcessor(db_path, allow_db_edit=allow_db_edit)
             
             try:
                 bot_response = processor.process_message(user_message)
