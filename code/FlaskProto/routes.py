@@ -42,10 +42,11 @@ def create_routes_blueprint(app):
                 # Clear memory and chat history
                 processor = ChatbotProcessor(filepath)
                 processor.reset_memory()
+                sample_content = processor.generate_sample_content()
 
                 session.pop('conversation', None)
-                return redirect(url_for('routes.chat'))
-
+                return redirect(url_for('routes.chat', sample_content=sample_content))
+            
         sample_databases = SampleDatabase.query.all()
         return render_template('upload-db.html', sample_databases=sample_databases)
 
@@ -99,8 +100,13 @@ def create_routes_blueprint(app):
         else:
             description_html = None
 
+            # Retrieve generated sample content if present
+        sample_content = request.args.get('sample_content', {})
+
         return render_template("chat.html", 
                             conversation=session.get('conversation', []),
                             sample_db=sample_db,
-                            description_html=description_html)
+                            description_html=description_html,
+                            sample_content=sample_content)
+
     return routes

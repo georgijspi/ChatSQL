@@ -3,10 +3,33 @@
 {% block content %}
 <br>
 <br>
-<div class="grid grid-cols-5 grid-rows-[75vh,1fr,auto] bg-cream h-[90vh]">
+<div class="grid grid-cols-5 grid-rows-[auto,1fr,auto] bg-cream h-[85vh]">    
+    <!-- Additional Information Bar for Mobile -->
+    <div class="md:hidden col-span-5 bg-blue-500 text-white p-4 text-center cursor-pointer rounded-t-lg" onclick="toggleModal()">
+        Database Information
+    </div>
+
+    <!-- Modal for Title and Description -->
+    <div id="infoModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300 ease-in-out" style="opacity: 0;">
+        <div class="bg-white rounded-lg p-4 m-4 transition-transform duration-300 ease-in-out transform translate-y-full">
+            {% if sample_db %}
+                <h1 class="text-xl font-bold text-gray-700">{{ sample_db.name }}</h1>
+                <div class="text-gray-700">{{ description_html|safe }}</div>
+            {% endif %}
+
+            {% if sample_content %}
+                <h2 class="text-xl font-bold text-gray-700">AI-Generated Database Description</h2>
+                <div class="text-gray-700">{{ sample_content|safe }}</div>
+            {% endif %}
+            <!-- Close Button -->
+            <button class="mt-4 w-full text-center text-gray-700 p-2 border-t-2 border-gray-200 rounded bg-gray-100 hover:bg-gray-200" onclick="toggleModal()">                Close
+            </button>
+        </div>
+    </div>
+
 
     <!-- Chat history area -->
-    <div class="col-span-3 row-span-1 overflow-y-auto p-4">
+    <div class="col-span-5 md:col-span-3 overflow-y-auto p-4 h-[75vh]">
         <div class="h-full">
             {% for entry in conversation %}
                 {% if entry.type == 'user' %}
@@ -25,34 +48,55 @@
     </div>
 
     <!-- Title and Description -->
-    <div class="bg-gray-200 rounded-tr-lg col-span-2 row-span-1 p-4 overflow-y-auto">
+    <div class="hidden md:block bg-gray-200 rounded-tr-lg md:col-span-2 row-span-1 p-4 overflow-y-auto">
         {% if sample_db %}
             <h1 class="text-xl font-bold text-gray-700">{{ sample_db.name }}</h1>
             <div class="text-gray-700">{{ description_html|safe }}</div>
         {% endif %}
+
+        {% if sample_content %}
+            <h2 class="text-xl font-bold text-gray-700">AI-Generated Database Description</h2>
+            <p class="text-gray-700">{{ sample_content|safe }}</p>
+        {% endif %}
     </div>
 
     <!-- Input and toggle button area -->
-    <div class="col-span-5 row-span-1 h-[10vh] rounded-b-lg flex items-center justify-between p-4 bg-white border-t border-gray-200">
+    <div class="col-span-5 row-span-1 h-[8vh] rounded-b-lg flex items-center justify-between p-4 bg-white border-t border-gray-200">
         <!-- Chat input area -->
-        <form action="/chat" method="post" class="flex-grow flex mr-4">
-            <input id="message" name="message" type="text" class="text-gray-700 flex-grow p-2 border border-gray-300 rounded" placeholder="Type your message">
-            <input type="hidden" name="allow_db_edit_hidden" id="allow_db_edit_hidden" value="false">
-            <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">
-                Send
-            </button>
-        </form>
+        <div class="w-3/5 flex mr-4 bg-white">
+            <form action="/chat" method="post" class="flex-grow flex">
+                <!-- Text input -->
+                <div class="flex-grow">
+                    <input id="message" name="message" type="text" class="text-gray-700 p-2 border border-gray-300 rounded-l w-full bg-white" placeholder="Type your message">
+                    <input type="hidden" name="allow_db_edit_hidden" id="allow_db_edit_hidden" value="false">
+                </div>
+                <!-- Send button with SVG inside -->
+                <div class="flex w-12 justify-center bg-white border border-gray-300 rounded-r">
+                    <button type="submit" class="">
+                        <svg fill="#000000" width="24" height="24" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                            <!-- SVG content -->
+                            <path d="M344.058,207.506c-16.568,0-30,13.432-30,30v76.609h-254v-76.609c0-16.568-13.432-30-30-30c-16.568,0-30,13.432-30,30
+                                v106.609c0,16.568,13.432,30,30,30h314c16.568,0,30-13.432,30-30V237.506C374.058,220.938,360.626,207.506,344.058,207.506z"/>
+                            <path d="M123.57,135.915l33.488-33.488v111.775c0,16.568,13.432,30,30,30c16.568,0,30-13.432,30-30V102.426l33.488,33.488
+                                c5.857,5.858,13.535,8.787,21.213,8.787c7.678,0,15.355-2.929,21.213-8.787c11.716-11.716,11.716-30.71,0-42.426L208.271,8.788
+                                c-11.715-11.717-30.711-11.717-42.426,0L81.144,93.489c-11.716,11.716-11.716,30.71,0,42.426
+                                C92.859,147.631,111.855,147.631,123.57,135.915z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- Toggle switch -->
         <label for="allow_db_edit" class="flex items-center cursor-pointer">
-            <div class="relative">
+            <span class="mr-4 text-sm text-gray-700 font-medium">Allow Database Editing</span>
+            <div class="relative mr-24">
                 <input type="checkbox" id="allow_db_edit" name="allow_db_edit" class="sr-only" onchange="toggleSwitch()">
                 <div class="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full"></div>
                 <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform"></div>
             </div>
-            <span class="ml-3 text-sm text-gray-700 font-medium">Allow Database Editing</span>
         </label>
     </div>
-
 
 </div>
 
@@ -77,6 +121,30 @@
             hiddenInput.value = "false";
         }
     }
+
+    function toggleModal() {
+        var modal = document.getElementById('infoModal');
+        var modalContent = modal.querySelector('.rounded-lg');
+
+        // Toggle the modal's visibility
+        if (modal.classList.contains('hidden')) {
+            // Prepare the modal to be displayed
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modalContent.style.transform = 'translateY(0)';
+            }, 10); // Start the animation shortly after the modal is no longer hidden
+        } else {
+            // Hide the modal
+            modal.style.opacity = '0';
+            modalContent.style.transform = 'translateY(100%)';
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Delay the hiding until the animation is complete
+        }
+    }
+
+
 </script>
 
 {% endblock %}
