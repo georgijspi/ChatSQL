@@ -1,0 +1,57 @@
+{
+    "database_path": "db_sample/sample_1.sqlite3",
+    "tests": [
+      {
+        "question": "What was the biggest vaccination rate achieved?",
+        "expected_sql_result": "The result is: (99.4,)"
+      },
+      {
+        "question": "Where was the biggest vaccination rate achieved?",
+        "expected_sql_result": "The result is: ('Rathfarnham-Templeogue, South Dublin',)"
+      },
+      {
+        "question": "What are the different age groups listed in the database?",
+        "expected_sql_result": "The result is: ('5 - 11 years',), ('12 years and over',)"
+      },
+      {
+        "question": "How many records are there for a the month of June 2022?",
+        "expected_sql_result": "Query Results: The result is: (1992,)"
+      },
+      {
+        "question": "How many records are there for th moneth of 2022 June?",
+        "expected_sql_result": "Query Results: The result is: (1992,)"
+      },
+      {
+        "question": "List the different local electoral areas in the database.",
+        "expected_sql_result": "Query Results: The result is: ('Borris-In-Ossory-Mountmellick, Laois',), ('Portlaoise, Laois',), ('Graiguecullen -Portarlington, Laois',), ('Carlow, Carlow',), ('Tullow, Carlow',), ('Muinebeag, Carlow',), ('Manorhamilton, Leitrim',), ('Ballinamore, Leitrim',), ('Carrick-On-Shannon, Leitrim',), ('Newcastle West, Limerick',), ('Adare-Rathkeale, Limerick',), ('Cappamore-Kilmallock, Limerick',), ('Limerick City West, Limerick',), ('Limerick City North, Limerick',), ('Limerick City East, Limerick',), ('Granard, Longford',), ('Ballymahon, Longford',), ('Longford, Longford',), ('Dundalk-Carlingford, Louth',), ('Dundalk South, Louth',), ('Ardee, Louth',), ('Drogheda Rural, Louth',), ('Drogheda Urban, Louth',), ('Ballina, Mayo',), ('Claremorris, Mayo',), ('Castlebar, Mayo',), ('Belmullet, Mayo',), ('Westport, Mayo',), ('Swinford, Mayo',), ('Kells, Meath',), ('Laytown-Bettystown, Meath',), ('Ashbourne, Meath',), ('Ratoath, Meath',), ('Trim, Meath',), ('Navan, Meath',), ('Monaghan, Monaghan',), ('Carrickmacross-Castleblayney, Monaghan',), ('Ballybay-Clones, Monaghan',), ('Birr, Offaly',), ('Tullamore, Offaly',), ('Edenderry, Offaly',), ('Boyle, Roscommon',), ('Roscommon, Roscommon',), ('Athlone, Roscommon',), ('Ballymote-Tobercurry, Sligo',), ('Sligo-Drumcliff, Sligo',), ('Sligo-Strandhill, Sligo',), ('Cavan-Belturbet, Cavan',), ('Bailieborough-Cootehill, Cavan',), ('Ballyjamesduff, Cavan',), ('Nenagh, Tipperary',), ('Roscrea-Templemore, Tipperary',), ('Carrick-On-Suir, Tipperary',), ('Clonmel, Tipperary',), ('Cashel-Tipperary, Tipperary',), ('Newport, Tipperary',), ('Thurles, Tipperary',), ('Cahir, Tipperary',), ('Dungarvan, Waterford',), ('Portlaw-Kilmacthomas, Waterford',), ('Lismore, Waterford',), ('Tramore-Waterford City West, Waterford',), ('Waterford City South, Waterford',), ('Waterford City East, Waterford',), ('Athlone, Westmeath',), ('Moate, Westmeath',), ('Kinnegad, Westmeath',), ('Mullingar, Westmeath',), ('Gorey, Wexford',), ('Kilmuckridge, Wexford',), ('New Ross, Wexford',), ('Rosslare, Wexford',), ('Wexford, Wexford',), ('Enniscorthy, Wexford',), ('Baltinglass, Wicklow',), ('Bray West, Wicklow',), ('Greystones, Wicklow',), ('Wicklow, Wicklow',), ('Arklow, Wicklow',), ('Bray East, Wicklow',), ('Rush-Lusk, Fingal',), ('Swords, Fingal',), ('Blanchardstown-Mulhuddart, Fingal',), ('Castleknock, Fingal',), ('Howth-Malahide, Fingal',), ('Stillorgan, Dún Laoghaire-Rathdown',), ('Dundrum, Dún Laoghaire-Rathdown',), ('Glencullen-Sandyford, Dún Laoghaire-Rathdown',), ('Killiney-Shankill, Dún Laoghaire-Rathdown',), ('Dún Laoghaire, Dún Laoghaire-Rathdown',), ('Blackrock, Dún Laoghaire-Rathdown',), ('Lucan, South Dublin',), ('Tallaght Central, South Dublin',), ('Rathfarnham-Templeogue, South Dublin',), ('Firhouse-Bohernabreena, South Dublin',), ('Tallaght South, South Dublin',), ('Clondalkin, South Dublin',), ('Balbriggan, Fingal',), ('Ongar, Fingal',), ('Palmerstown-Fonthill, South Dublin',), ('Ballymun-Finglas, Dublin City',), ('Cabra-Glasnevin, Dublin City',), ('Ballyfermot-Drimnagh, Dublin City',), ('Kimmage-Rathmines, Dublin City',), ('Pembroke, Dublin City',), ('South East Inner City, Dublin City',), ('North Inner City, Dublin City',), ('Clontarf, Dublin City',), ('Donaghmede, Dublin City',), ('Artane-Whitehall, Dublin City',), ('South West Inner City, Dublin City',), ('Ennistimon, Clare',), ('Killaloe, Clare',), ('Shannon, Clare',), ('Ennis, Clare',), ('Kilrush, Clare',), ('Kanturk, Cork County',), ('Fermoy, Cork County',), ('Midleton, Cork County',), ('Carrigaline, Cork County',), ('Cobh, Cork County',), ('Bandon-Kinsale, Cork County',), ('Bantry-West Cork, Cork County',), ('Skibbereen-West Cork, Cork County',), ('Macroom, Cork County',), ('Mallow, Cork County',), ('Cork City North West, Cork City',), ('Cork City North East, Cork City',), ('Cork City South East, Cork City',), ('Cork City South Central, Cork City',), ('Cork City South West, Cork City',), ('Glenties, Donegal',), ('Milford, Donegal',), ('Carndonagh, Donegal',), ('Buncrana, Donegal',), ('Donegal, Donegal',), ('Letterkenny, Donegal',), ('Lifford-Stranorlar, Donegal',), ('Conamara North, Galway County',), ('Tuam, Galway County',), ('Ballinasloe, Galway County',), ('Loughrea, Galway County',), ('Athenry-Oranmore, Galway County',), ('Gort-Kinvara, Galway County',), ('Conamara South, Galway County',), ('Galway City West, Galway City',), ('Galway City Central, Galway City',), ('Galway City East, Galway City',), ('Listowel, Kerry',), ('Castleisland, Kerry',), ('Killarney, Kerry',), ('Kenmare, Kerry',), ('Corca Dhuibhne, Kerry',), ('Tralee, Kerry',), ('Maynooth, Kildare',), ('Celbridge, Kildare',), ('Naas, Kildare',), ('Athy, Kildare',), ('Kildare, Kildare',), ('Clane, Kildare',), ('Leixlip, Kildare',), ('Newbridge, Kildare',), ('Castlecomer, Kilkenny',), ('Kilkenny, Kilkenny',), ('Piltown, Kilkenny',), ('Callan-Thomastown, Kilkenny',)"
+      },
+      {
+        "question": "What is the total number of vaccinations recorded in a particular local electoral area?",
+        "expected_sql_result": "The result is: (1875.9,)"
+      },
+      {
+        "question": "Show the average number of vaccinations per month.",
+        "expected_sql_result": "The result is: (8.496527777777779,)"
+      },
+      {
+        "question": " How many vaccinations were done for each age group in June 2022?",
+        "expected_sql_result": "The result is: ('12 years and over', 26275.1), ('5 - 11 years', 3631.3)"
+      },
+      {
+        "question": " How many vaccinations were done for each age group in 2022 June?",
+        "expected_sql_result": "The result is: ('12 years and over', 26275.1), ('5 - 11 years', 3631.3)"
+      },
+      {
+        "question": " What is the month with the highest number of vaccinations for each age group?",
+        "expected_sql_result": "The result is: ('12 years and over', '2022 June', 99.4), ('5 - 11 years', '2022 June', 53.1)"
+      },
+      {
+        "question": "Compare the total vaccinations between the electoral areas of Ennis, Clase and Midleton, Cork County?",
+        "expected_sql_result": "The result is: ('Midleton, Cork County', 1848.3)"
+      },
+      {
+        "question": "Find the age group with the least vaccinations in the month of 2022 June.",
+        "expected_sql_result": "The result is: ('5 - 11 years', 3631.3)"
+      }
+    ]
+}
