@@ -21,6 +21,7 @@ load_dotenv()
 def estimate_token_length(text):
     return len(text.split())
 
+# Different models tested:
 # gpt-3.5-turbo-0125
 # gpt-4-1106-preview
 
@@ -28,7 +29,7 @@ class ChatbotProcessor:
     def __init__(self, db_path, model_name="gpt-3.5-turbo-0125", max_token_limit=16385, allow_db_edit=False):
         self.db_path = db_path
         self.allow_db_edit = allow_db_edit
-        print("==Chatbot Processor - Allow DB Edit:", self.allow_db_edit)
+        print("Chatbot Processor - Allow DB Edit:", self.allow_db_edit)
         self.client = ChatOpenAI(model_name=model_name)
         self.memory = ConversationBufferWindowMemory(
             chat_memory=FileChatMessageHistory("chat_history.json"),
@@ -94,7 +95,7 @@ class ChatbotProcessor:
 
     def execute_sql_query(self, sql_query):
         try:
-            # Use regex to extract the SQL query if it is enclosed by backticks
+            # regex to extract the SQL query if it is enclosed by backticks
             pattern = r"```sql(.*?)```"
             match = re.search(pattern, sql_query, re.DOTALL | re.IGNORECASE)
             if match:
