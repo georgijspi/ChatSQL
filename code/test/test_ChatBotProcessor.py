@@ -1,6 +1,6 @@
 import pytest
 import sys
-sys.path.append('/home/cheezyhint/2024-ca326-cchoa-3yp/code/FlaskProto')
+sys.path.append('../FlaskProto')
 from chatbot import ChatbotProcessor
 
 # Set the OPENAI_API_KEY environment variable for testing
@@ -26,7 +26,7 @@ def test_get_database_schema_success():
     assert schema == expected_schema
 
 
-# Test case for error handling - database connection error
+# Test case for error handling - database connection not found
 def test_get_database_schema_empty_path():
     with pytest.raises(ValueError) as e:
         db_path = ""

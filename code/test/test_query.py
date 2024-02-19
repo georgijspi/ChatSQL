@@ -1,7 +1,7 @@
 import pytest
 import json
 import sys
-sys.path.append('/home/cheezyhint/2024-ca326-cchoa-3yp/code/FlaskProto')
+sys.path.append('../FlaskProto')
 from chatbot import ChatbotProcessor
 
 # Load test data from test_data.json
@@ -20,6 +20,8 @@ def chatbot_processor():
 def test_question_answer_pair(test_case, chatbot_processor):
     question = test_case["question"]
     expected_result = test_case["expected_sql_result"]
-    sql_query = chatbot_processor.generate_sql_query(question)
+    database_schema = chatbot_processor.get_database_schema()
+    question_result = chatbot_processor.generate_sql_query(question, [], False, database_schema)
+    sql_query = question_result["sql_query"]
     response = chatbot_processor.execute_sql_query(sql_query)
     assert response == expected_result
