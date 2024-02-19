@@ -34,7 +34,6 @@ def test_get_database_schema_empty_path():
         schema = processor.get_database_schema()
     assert str(e.value) == "Empty database path provided"
 
-
 # Test case for process_message method
 def test_process_message():
     # Test the process_message method with a sample question
@@ -45,18 +44,3 @@ def test_process_message():
     # Assert that the response is not empty
     assert response is not None
     # Add more assertions based on the expected behavior of the process_message method
-
-# You can add more test cases for other methods or scenarios as needed
-
-# If you have specific methods or scenarios you want to test, you can add more test cases following a similar structure
-
-# Example:
-# def test_another_method(chatbot_processor):
-#     # Test another method of ChatbotProcessor
-#     # Add your test logic here
-#     assert True  # Add assertion based on the expected behavior
-
-# def test_another_scenario(chatbot_processor):
-#     # Test another scenario of ChatbotProcessor
-#     # Add your test logic here
-#     assert True  # Add assertion based on the expected behavior
