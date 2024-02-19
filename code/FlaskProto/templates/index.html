@@ -1,44 +1,87 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mx-auto px-4">
-    <section class="my-12 text-center">
-        <h2 class="text-3xl font-bold primary-color mb-4">Welcome to ChatSQL</h2>
-        <p class="mb-6">ChatSQL is an interactive chat application that allows you to generate SQL queries from natural language. Powered by AI, it simplifies database interactions.</p>
-        
-        <!-- sample chat display -->
-        <div class="bg-secondary-color shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md mx-auto">
-            <div class="mb-4 h-48 overflow-y-auto">
-                <!-- static sample converstation -->
-                <div class="text-right">
-                    <span class="inline-block bg-blue-500 rounded px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">What is the total revenue?</span>
-                </div>
-                <div class="text-left">
-                    <span class="inline-block bg-green-600 rounded px-3 py-1 text-sm font-semibold text-white mr-2 mb-2">The total revenue is $1,234,567.</span>
-                </div>
+<div class="mx-auto px-4">
+    <!-- Hero Section -->
+    <section class="text-center bg-cover bg-hero-pattern h-[85vh] flex items-center justify-center flex-col" style="background-image: url('{{ url_for('static', filename='images/hero.webp') }}'); background-size: cover; background-position: center center; background-repeat: no-repeat; width: 100vw; margin-left: calc(-50vw + 50%);">
+        <div class="w-full flex justify-center">
+            <div class="text-gray-800 bg-[#fefae0] bg-opacity-90 p-6 md:p-12">
+                <h1 class="text-5xl font-bold mb-6">Effortless SQL Queries with ChatSQL</h1>
+                <p class="text-xl mb-8">Transform how you interact with your databases using natural language processing.</p>
+                <a href="#welcome-section" class="text-3xl scroll-link bg-primary-color hover:bg-opacity-90 font-bold py-3 px-6 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out">
+                    Get Started
+                </a>
             </div>
         </div>
+    </section>
+    
 
-        <!-- tut steps -->
-        <div class="bg-secondary-color p-6 rounded-lg mb-6 mx-auto">
-            <h3 class="text-2xl font-bold mb-3 primary-color">How to Use</h3>
-            <ul class="list-disc pl-5 text-left mx-auto" style="max-width: 600px;">
-                <li>Go to the chat page and type your question like "What is the total revenue?"</li>
-                <li>The bot will respond with the generated SQL query result, such as "The total revenue is $1,234,567."</li>
-                <li>Review the query results displayed by the bot in the chat interface.</li>
-            </ul>
+    <!-- Features Section -->
+    <section id="welcome-section" class="my-24">
+        <div class="pt-6 grid md:grid-cols-3 gap-10 p-24 text-center">
+            <!-- Feature Card 1 -->
+            <div class="feature-card bg-white hover:bg-[#d3d0b9] transition duration-300 ease-in-out shadow-lg rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">User-Friendly Interface</h3>
+                <p class="text-gray-600 mb-4">ChatSQL’s intuitive design makes database queries as simple as asking a question.</p>
+                <img width="56" height="56" src="{{ url_for('static', filename='images/trans.svg') }}" alt="User-Friendly" class="mx-auto mb-4" />
+            </div>
+
+            <!-- Feature Card 2 -->
+            <div class="feature-card bg-white hover:bg-[#d3d0b9] transition duration-300 ease-in-out shadow-lg rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Advanced NLP</h3>
+                <p class="text-gray-600 mb-4">We use OpenAI's advanced natural language processing that understands your queries to deliver precise results.</p>
+                <img width="56" height="56" src="{{ url_for('static', filename='images/cube.svg') }}" alt="NLP" class="mx-auto mb-4" />
+            </div>
+
+            <!-- Feature Card 3 -->
+            <div class="feature-card bg-white hover:bg-[#d3d0b9] transition duration-300 ease-in-out shadow-lg rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Database Modification</h3>
+                <p class="text-gray-600 mb-4">We allow you to securely modify the database when you choose to by selecting the toggle.</p>
+                <img width="56" height="56" src="{{ url_for('static', filename='images/indent.svg') }}" alt="Secure" class="mx-auto mb-4" />
+            </div>
         </div>
+    </section>
 
-        <!-- "Try Now" button -->
-        <div class="text-center">
-            <a href="{{ url_for('routes.upload_db') }}" style="background-color: #d4a373;" class="hover:bg-opacity-75 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block transition duration-300 ease-in-out relative try-now-btn">
-                Try Now
-            </a>            
+    <section class="pb-14 my-12 text-center">
+        <div class="container mx-auto px-4">
+            <section class="my-12 text-center">
+                <h2 class="text-3xl font-bold primary-color mb-4">Welcome to ChatSQL</h2>
+                <p class="mb-6">ChatSQL is an interactive chat application that allows you to generate SQL queries from natural language. Powered by AI, it simplifies database interactions.</p>
+                
+                <!-- sample chat display -->
+                <div class="bg-secondary-color shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md mx-auto">
+                    <div class="mb-4 h-48 overflow-y-auto">
+                        <!-- static sample converstation -->
+                        <div class="text-right">
+                            <span class="inline-block bg-blue-200 rounded-tl-[10px] rounded-bl-[10px] rounded-br-[10px] px-3 py-1 text-base md:text-sm font-semibold text-gray-700 mr-2 mb-2">What is the total revenue?</span>
+                        </div>
+                        <div class="text-left">
+                            <span class="inline-block bg-green-200 rounded-tr-[10px] rounded-bl-[10px] rounded-br-[10px] px-3 py-1 text-base md:text-sm font-semibold text-gray-700 mr-2 mb-2"">The total revenue is $1,234,567.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- tut steps -->
+                <div class="bg-secondary-color p-6 rounded-lg mb-6 mx-auto">
+                    <h3 class="text-2xl font-bold mb-3 primary-color">How to Use</h3>
+                    <ul class="list-disc pl-5 text-left mx-auto" style="max-width: 600px;">
+                        <li>Go to the chat page and type your question like "What is the total revenue?"</li>
+                        <li>The bot will respond with the generated SQL query result, such as "The total revenue is $1,234,567."</li>
+                        <li>Review the query results displayed by the bot in the chat interface.</li>
+                    </ul>
+                </div>
+
+                <!-- "Try Now" button -->
+                <div class="text-center">
+                    <a href="{{ url_for('routes.upload_db') }}" style="background-color: #d4a373;" class="hover:bg-opacity-75 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block transition duration-300 ease-in-out relative try-now-btn">
+                        Try Now
+                    </a>            
+                </div>
+            </section>
         </div>
     </section>
 </div>
 
-<!-- shimmer snimation styles -->
 <style>
     .try-now-btn {
         position: relative;
@@ -64,5 +107,50 @@
             transform: translateX(100%);
         }
     }
+    .feature-card {
+        background: #f5f1d8;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+
+    .animate-bounce {
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-30px);
+        }
+        60% {
+            transform: translateY(-15px);
+        }
+    html {
+        scroll-behavior: smooth;
+    }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var scrollLinks = document.querySelectorAll('.scroll-link');
+
+        scrollLinks.forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                var target = document.getElementById(this.getAttribute('href').substring(1));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    });
+</script>
+
 {% endblock %}

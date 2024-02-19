@@ -1,30 +1,60 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="flex flex-col md:flex-row items-center justify-center min-h-screen py-12 bg-secondary-color gap-8">
-    <!-- Upload Database Form -->
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-md">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Upload Your Database</h3>
-        <form action="{{ url_for('routes.upload_db') }}" method="post" enctype="multipart/form-data" class="mb-4">
-            <input type="file" name="file" accept=".db,.sqlite,.sqlite3" class="mb-4" />
-            <button type="submit" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
-                Upload
-            </button>
-        </form>
-    </div>
+<div class="flex flex-col md:flex-row items-center justify-center min-h-screen py-24 bg-secondary-color gap-0 px-4 pt-0 md:px-0">
+    
+    <div class="md:flex w-full max-w-4xl">
 
-    <!-- Sample Databases List -->
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 w-full max-w-md">
-        <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Choose a Sample Database</h3>
-        <div class="flex flex-col">
-            {% for db in sample_databases %}
-            <a href="{{ url_for('routes.select_sample_db', db_name=db.name) }}" class="bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-2 transition duration-300 ease-in-out">
-                {{ db.name }}
-            </a>
-            {% endfor %}
+        <!-- Upload Database Form -->
+        <div class="md:bg-white md:shadow-md md:rounded-l-lg p-8 w-full md:w-1/2">
+            <h3 class="text-2xl font-bold text-[#d4a373] md:text-gray-800 mb-4 text-center">Upload Your Database</h3>
+            <form id="uploadForm" action="{{ url_for('routes.upload_db') }}" method="post" enctype="multipart/form-data" class="flex flex-col">
+                <div id="fileUploadContainer" class="flex flex-col items-center">
+                    <label id="fileLabel" class="w-2/3 md:w-full flex flex-col items-center px-4 py-6 bg-gray-300 text-gray-800 rounded-lg shadow-lg tracking-wide uppercase border border-gray-300 cursor-pointer hover:bg-gray-200 mb-4">
+                        <svg id="uploadIcon" width="24" height="24" viewBox="0 0 24 24" fill="#e2e8f0" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21V11M12 11L9 14M12 11L15 14M7 16.8184C4.69636 16.2074 3 14.1246 3 11.6493C3 9.20008 4.8 6.9375 7.5 6.5C8.34694 4.48637 10.3514 3 12.6893 3C15.684 3 18.1317 5.32251 18.3 8.25C19.8893 8.94488 21 10.6503 21 12.4969C21 14.8148 19.25 16.7236 17 16.9725" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span id="fileText" class="text-base leading-normal">Select a file</span>
+                        <input type='file' id="fileInput" name="file" accept=".db,.sqlite,.sqlite3" class="hidden" onchange="showFileName()"/>
+                    </label>
+                    <span id="fileName" class="text-lm text-gray-500 mb-4"></span>
+                </div>
+                <button type="submit" class="bg-gray-200 text-gray-500 btn-outline-primary mx-auto duration-300 ease-in-out focus:outline-none focus:shadow-outline border border-gray-600 hover:bg-gray-600 md:text-gray-800 hover:text-white font-normal py-2 px-4 rounded-[16px] w-2/5 md:w-3/4">
+                    Start Chatting
+                </button>
+                
+            </form>
         </div>
+
+        <h3 class="text-[#d4a373] text-2xl text-center md:hidden">Or</h3>
+
+        <!-- Sample Databases List -->
+        <div class="md:bg-white md:shadow-md md:rounded-r-lg p-8 w-full md:w-1/2 mt-6 md:mt-0">
+            <h3 class="text-2xl font-bold text-[#d4a373] md:text-gray-800 mb-4 text-center">Choose a Sample Database</h3>
+            <div class="flex flex-col">
+                {% for db in sample_databases %}
+                <a href="{{ url_for('routes.select_sample_db', db_name=db.name) }}" class="bg-gray-200 hover:bg-gray-600 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4 last:mb-0 transition duration-300 ease-in-out">
+                    {{ db.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
 
 </div>
 
+<script>
+    function showFileName() {
+        var fileInput = document.getElementById('fileInput');
+        var fileName = document.getElementById('fileName');
+        var fileLabel = document.getElementById('fileLabel');
+
+        if (fileInput.files.length > 0) {
+            var file = fileInput.files[0];
+            fileName.textContent = file.name;
+            fileName.classList.add('visible');
+        }
+    }
+</script>
 {% endblock %}
