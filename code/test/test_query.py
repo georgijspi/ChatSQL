@@ -20,5 +20,6 @@ def chatbot_processor():
 def test_question_answer_pair(test_case, chatbot_processor):
     question = test_case["question"]
     expected_result = test_case["expected_sql_result"]
-    response = chatbot_processor.process_message(question)
+    sql_query = chatbot_processor.generate_sql_query(question)
+    response = chatbot_processor.execute_sql_query(sql_query)
     assert response == expected_result
