@@ -67,6 +67,8 @@ class ChatbotProcessor:
             return f"Error in generating content: {e}"
 
     def get_database_schema(self):
+        if not self.db_path:
+            raise ValueError("Empty database path provided")
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -93,6 +95,7 @@ class ChatbotProcessor:
             return {'schema': '; '.join(schema_info), 'sample_data': sample_data_info}
         except Exception as e:
             return f"Error reading database schema: {e}"
+
 
     def execute_sql_query(self, sql_query):
         try:
