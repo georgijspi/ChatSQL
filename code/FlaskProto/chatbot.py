@@ -26,7 +26,7 @@ def estimate_token_length(text):
 # gpt-4-1106-preview
 
 class ChatbotProcessor:
-    def __init__(self, db_path, model_name="gpt-3.5-turbo-0125", max_token_limit=16385, allow_db_edit=False):
+    def __init__(self, db_path, model_name="gpt-4-1106-preview", max_token_limit=16385, allow_db_edit=False):
         self.db_path = db_path
         self.allow_db_edit = allow_db_edit
         print("Chatbot Processor - Allow DB Edit:", self.allow_db_edit)
@@ -66,6 +66,8 @@ class ChatbotProcessor:
             return f"Error in generating content: {e}"
 
     def get_database_schema(self):
+        if not self.db_path:
+            raise ValueError("Empty database path provided")
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -92,6 +94,7 @@ class ChatbotProcessor:
             return {'schema': '; '.join(schema_info), 'sample_data': sample_data_info}
         except Exception as e:
             return f"Error reading database schema: {e}"
+
 
     def execute_sql_query(self, sql_query):
         try:
