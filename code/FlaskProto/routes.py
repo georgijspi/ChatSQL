@@ -79,14 +79,15 @@ def create_routes_blueprint(app):
         if request.method == "POST":
             user_message = request.form["message"]
             allow_db_edit = request.form.get("allow_db_edit_hidden", "false") == "true"
+            session['debug_mode'] = request.form.get('debug_mode', 'false')
             db_path = session.get('db_path', 'chinook.db') 
-
+            
             print("Allow DB Edit:", allow_db_edit)
 
             processor = ChatbotProcessor(db_path, allow_db_edit=allow_db_edit)
             
             try:
-                bot_response = processor.process_message(user_message)
+                bot_response, debug_info = processor.process_message(user_message)
             except RateLimitError as e:
                 return render_template("rate_limit_error.html", error=str(e)) # not implemented yet
 
@@ -95,6 +96,8 @@ def create_routes_blueprint(app):
                 session['conversation'] = []
             session['conversation'].append({"type": "user", "text": user_message})
             session['conversation'].append({"type": "bot", "text": bot_response})
+            session['conversation'].append({"type": "bot_debug", "sql_query": debug_info['sql_query'], "sql_output": debug_info['sql_output']})
+            
             session.modified = True
 
         # Pass the sample_db variable to the template context

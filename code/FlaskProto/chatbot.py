@@ -113,7 +113,7 @@ class ChatbotProcessor:
 
                 if sql_query.strip().lower().startswith("select"):
                     results = cursor.fetchall()  # Fetch results for SELECT queries
-                    results = "The result is: " + ", ".join(map(str, results)) # When we execute SQL for SELECT queries
+                    results = ", ".join(map(str, results)) # When we execute SQL for SELECT queries
                 else:
                     conn.commit()
                     results = "Database update succeeded. Rows affected: " + str(cursor.rowcount) # When we execute SQL for database modification queries
@@ -168,7 +168,7 @@ class ChatbotProcessor:
             input_variables=["question", "query_results"],
             messages=[
                 HumanMessagePromptTemplate.from_template(
-                    "You are a data analyst. Generate a natural language response from the given Question: {question}\nand this additional information: {query_results}. Without fail, give only the natural language response detailing output that any non-technical person can understand, with minimal additional explanations. If you cannot answer simply say so, with no additional text."
+                    "You are a data analyst. Generate a natural language response from the given Question: {question}\nand this additional result: {query_results}. Without fail, give only the natural language response detailing output that any non-technical person can understand, with minimal additional explanations. If you cannot answer simply say so, with no additional text."
                 ),
             ],
         )
@@ -211,9 +211,17 @@ class ChatbotProcessor:
 
         # Save the successful interaction to the memory
         self.memory.save_context({"input": question}, {"output": bot_response})
-        return bot_response
+        
+        # Debug information
+        debug_info = {
+            "sql_query": sql_query,
+            "sql_output": query_results
+        }
+
+        return bot_response, debug_info
     
 # Flask route integration
 def process_chat_message(question, db_path):
     processor = ChatbotProcessor(db_path)
-    return processor.process_message(question)
+    response, debug_info = processor.process_message(question)
+    return response, debug_info
