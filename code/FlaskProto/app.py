@@ -1,13 +1,20 @@
 from flask import Flask
 from flask_session import Session
+
 from database import db, SampleDatabase
 from routes import create_routes_blueprint
+
+import os
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 Session(app)
 db.init_app(app)
 
+# Inside your upload_db function
+upload_folder = app.config['UPLOAD_FOLDER']
+if not os.path.exists(upload_folder):
+    os.makedirs(upload_folder)
 
 # Register routes with the app
 app.register_blueprint(create_routes_blueprint(app))

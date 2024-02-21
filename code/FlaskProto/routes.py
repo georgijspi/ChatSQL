@@ -28,12 +28,12 @@ def create_routes_blueprint(app):
         if request.method == 'POST':
             # Check if the post request has the file part
             file = request.files.get('file')
-            if not file:
+            if not file or file.filename == '':
                 return render_template('upload-db.html', sample_databases=sample_databases)
             if file.filename == '':
                 return render_template('upload-db.html', sample_databases=sample_databases)
             if file and allowed_file(file.filename, app):
-                filename = secure_filename(file.filename)
+                filename = file.filename
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 session['db_path'] = filepath
