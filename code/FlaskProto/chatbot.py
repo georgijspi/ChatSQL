@@ -26,7 +26,7 @@ def estimate_token_length(text):
 # gpt-4-1106-preview
 
 class ChatbotProcessor:
-    def __init__(self, db_path, model_name="gpt-4-1106-preview", max_token_limit=16385, allow_db_edit=False):
+    def __init__(self, db_path, model_name="gpt-3.5-turbo-0125", max_token_limit=16385, allow_db_edit=False):
         self.db_path = db_path
         self.allow_db_edit = allow_db_edit
         print("Chatbot Processor - Allow DB Edit:", self.allow_db_edit)
