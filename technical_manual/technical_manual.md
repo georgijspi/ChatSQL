@@ -38,6 +38,8 @@ Define and technical terms used in this document. Only include those with which 
 - SQL: 
 - SQL Query: 
 - [LLM] hallucination: 
+- `"POST"` request:
+- `"GET"` request:
 
 ### Libraries and terminology used in `chatbot.py`:
 - LangChain\[1\]: A python library used for managing interactions with AI pipelines and memory.
@@ -160,9 +162,7 @@ In the ChatSQL system, a key feature is the prevention of accidental or database
 
 The flask is a simple but effective control mechanism. It's default value is set to `False`, meaning the user must intentionally select the option to enable database modification via a toggle next to the chat window.
 
-### TODO: insert image of modification button
-
-## 2.7Debug Mode
+## 2.7 Debug Mode
 The ChatSQL backend tracks and saves the user's questions as well as the corresponding chatbot's response, SQL query generated and SQL output. These details can be viewed by clicking a toggle button which showcases the SQL query and SQL output below each of the chatbot's message. 
 
 This is intended for debugging internally while manually testing the application via the frontend website, additionally it is able to provide context to the end user if they wish to look at the corresponding SQL code which produced the answer.
@@ -180,6 +180,49 @@ This is intended for debugging internally while manually testing the application
 
 ## 3.1 DFD System Model
 ![DFD](DFD.png "Data Flow Diagram")
+
+The above Data Flow Diagram provides a high-level graphical view of the system's operational flow. IT visualizes how data inputs are processed and converted into outputs that are processed and shown to the user.
+
+### 3.1.1 Key Components
+#### 3.1.1.1 User:
+- starting point of data flow via user input.
+- interacts with the Web interface via a Web Browser (ie; Google Chrome, Mozille Firefox, Microsoft Edge).
+#### 3.1.1.2 Web Interface:
+- User's primary interaction layer.
+- Receives user inputs and processes them to the Flask backend via `"POST"` request.
+#### 3.1.1.3 Flask Application:
+- Handles the web application configuration and logic.
+- Receives data from Web Interface.
+- Communicates with the LLM Layer to process natural language input
+#### 3.1.1.4 LLM Layer:
+- Receives user input from Flask application along with additional database context. 
+- Preprocesses data between the different stages of the LLM Layer
+- Uses curated prompts to generate SQL via OpenAI API query & a natural language response.
+#### 3.1.1.5 SQLite Database:
+- Processes SQL Queries sent by the LLM Layer
+- Returns query results to the LLM Layer. 
+
+### 3.1.2 Data Flow Process
+#### 3.1.2.1 **User Interaction**
+- The user initializes the data flow by typing in a natural language query through the Web Interface.
+
+#### 3.1.2.2 **POST Request**
+- The Web Interface packs the data into a `"POST"` request and sends it to the Flask backend using the `/chat` route.
+
+#### 3.1.2.3 **Processing & LLM Communication**
+-  Once the Flask backend receives the question, it then initializes the flask session for the user which will save all communications for the duration of the conversation.
+- The Flask backend then sends the database path and user's question to the LLM Layer using a `/chat ` `"POST"` request.
+
+#### 3.1.2.4 **LLM Layer Processing**
+- Once the LLM layer receives the input from the Flask application, it preprocesses the database by reading it and generating a database schema that can be placed in the curated prompt along with the user's question.
+- The LLM Layer queries the OpenAI API with the curated prompt.
+
+#### 3.1.2.5 **Database Query Execution**
+- Upon receiving the SQL query from the OpenAI API, the LLM Layer utilizes a function called `execute_sql_query()` 
+
+#### 3.1.2.6 **Post-Processing and Return**
+
+#### 3.1.2.7 **User Result**
 
 ## 3.2 
 
