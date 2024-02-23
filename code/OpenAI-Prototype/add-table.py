@@ -15,7 +15,7 @@ cursor.execute('''
 ''')
 
 # Generate and insert random ratings (values between 0 and 100)
-for track_id in range(1, 3504):  # Adjust the range based on your needs
+for track_id in range(1, 3504):
     rating_value = random.randint(0, 100)
     cursor.execute('INSERT INTO rating (track_id, rating_value) VALUES (?, ?)', (track_id, rating_value))
 

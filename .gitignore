@@ -1,10 +1,12 @@
-code/OpenAI-Prototype/.env
 code/OpenAI-Prototype/env/
 code/OpenAI-Prototype/chat_history.json
-code/FlaskProto/.env
 code/FlaskProto/env/
-code/FlaskProto/chat_history.json
 code/FlaskProto/db_uploads/*.*
 code/FlaskProto/flask_session/*.*
-code/FlaskProto/flask_session/
+code/FlaskProto/flask_session
 code/FlaskProto/__pycache__/*.*
+code/FlaskProto/__pycache__
+code/env/
+code/test/__pycache__/*.*
+code/test/__pycache__
+code/flask_session

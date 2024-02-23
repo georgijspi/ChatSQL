@@ -37,7 +37,7 @@ def get_database_schema(db_path):
             schema_info.append(f"{table_name}: {', '.join(column_names)}")
 
         conn.close()
-        return '; '.join(schema_info)  # Use a semi-colon to separate each table's schema
+        return '; '.join(schema_info)
     except Exception as e:
         return f"Error reading database schema: {e}"
 
