@@ -3,7 +3,7 @@
 {% block content %}
 <br>
 <br>
-<div class="px-1 md:px-8 grid grid-cols-5 grid-rows-[auto,1fr,auto] bg-cream h-[85vh]">    
+<div class="x-1 md:px-8 grid grid-cols-5 grid-rows-[auto,1fr,auto] bg-cream h-[85vh] mx-auto max-w-[1500px] w-full">
     <!-- Additional Information Bar for Mobile -->
     <div class="md:hidden col-span-5 bg-blue-500 text-white p-4 text-center cursor-pointer rounded-t-lg" onclick="toggleModal()">
         Database Information
@@ -49,10 +49,18 @@
                     <div class="text-right p-2">
                         <span class="inline-block bg-blue-200 rounded-tl-[10px] rounded-bl-[10px] rounded-br-[10px] px-3 py-1 text-base md:text-sm font-semibold text-gray-700 mr-2 mb-2">{{ entry.text }}</span>
                     </div>
-                {% else %}
+                {% elif entry.type == 'bot' %}
                     <!-- Bot message -->
                     <div class="text-left p-2">
                         <span class="inline-block bg-green-200 rounded-tr-[10px] rounded-bl-[10px] rounded-br-[10px] px-3 py-1 text-base md:text-sm font-semibold text-gray-700 mr-2 mb-2">{{ entry.text }}</span>
+                    </div>
+                {% elif entry.type == 'bot_debug' %}
+                    <!-- Debug information -->
+                    <div class="debug-info hidden text-left p-2">
+                        <span class="inline-block bg-yellow-200 rounded px-3 py-1 text-base md:text-sm font-semibold text-gray-700 mr-2 mb-2">
+                            <strong>SQL Query:</strong> {{ entry.sql_query }}<br>
+                            <strong>Output:</strong> {{ entry.sql_output }}
+                        </span>
                     </div>
                 {% endif %}
             {% endfor %}
@@ -74,11 +82,9 @@
         {% if session.get('db_path') and not session.get('db_path') in sample_databases %}
         <div class="static text-center mt-4">
             <a href="{{ url_for('routes.download_db') }}" class="flex flex-col items-center justify-center bg-grey-500 hover:bg-grey-700 text-black font-bold py-2 px-4 rounded">
-                <!-- SVG with currentColor to inherit the text color -->
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M8 12L12 16M12 16L16 12M12 16V4M4 20H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <!-- Text below the SVG -->
                 <span class="mt-2">Download Database</span>
             </a>
         </div>
@@ -87,51 +93,60 @@
     </div>
 
     <!-- Input and toggle button area -->
-<div class="col-span-5 row-span-1 flex flex-col md:flex-row items-center justify-between p-4 bg-white rounded-b-lg border-t border-gray-200">
-    <!-- Chat input area -->
-    <div class="w-full md:w-3/5 mb-2 md:mb-0 md:mr-4 bg-white">
-        <form action="/chat" method="post" class="flex-grow flex">
-            <!-- Text input -->
-            <div class="flex-grow">
-                <input id="message" name="message" type="text" class="text-gray-700 p-2 border border-gray-300 rounded-l w-full bg-white" placeholder="Type your message">
-                <input type="hidden" name="allow_db_edit_hidden" id="allow_db_edit_hidden" value="false">
-            </div>
-            <!-- Send button with new SVG inside -->
-            <div class="flex w-12 justify-center bg-white border border-gray-300 rounded-r">
-                <button type="submit" class="flex items-center justify-center p-1">
-                    <!-- New SVG content with adjusted size -->
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M20.7639 12H10.0556M3 8.00003H5.5M4 12H5.5M4.5 16H5.5M9.96153 12.4896L9.07002 15.4486C8.73252 16.5688 8.56376 17.1289 8.70734 17.4633C8.83199 17.7537 9.08656 17.9681 9.39391 18.0415C9.74792 18.1261 10.2711 17.8645 11.3175 17.3413L19.1378 13.4311C20.059 12.9705 20.5197 12.7402 20.6675 12.4285C20.7961 12.1573 20.7961 11.8427 20.6675 11.5715C20.5197 11.2598 20.059 11.0295 19.1378 10.5689L11.3068 6.65342C10.2633 6.13168 9.74156 5.87081 9.38789 5.95502C9.0808 6.02815 8.82627 6.24198 8.70128 6.53184C8.55731 6.86569 8.72427 7.42461 9.05819 8.54246L9.96261 11.5701C10.0137 11.7411 10.0392 11.8266 10.0493 11.9137C10.0583 11.991 10.0582 12.069 10.049 12.1463C10.0387 12.2334 10.013 12.3188 9.96153 12.4896Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-            </div>
-        </form>
-    </div>
+    <div class="col-span-5 row-span-1 flex flex-col md:flex-row items-center justify-between p-4 bg-white rounded-b-lg border-t border-gray-200">
+        <!-- Chat input area -->
+        <div class="w-full md:w-3/5 mb-2 md:mb-0 md:mr-4 bg-white">
+            <form action="/chat" method="post" class="flex-grow flex">
+                <!-- Text input -->
+                <div class="flex-grow">
+                    <input id="message" name="message" type="text" class="text-gray-700 p-2 border border-gray-300 rounded-l w-full bg-white" placeholder="Type your message">
+                    <input type="hidden" name="allow_db_edit_hidden" id="allow_db_edit_hidden" value="false">
+                    <input type="hidden" name="debug_mode" id="debug_mode" value="{{ 'true' if session.get('debug_mode', False) else 'false' }}">
+                </div>
+                <!-- Send button with new SVG inside -->
+                <div class="flex w-12 justify-center bg-white border border-gray-300 rounded-r">
+                    <button type="submit" class="flex items-center justify-center p-1">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.7639 12H10.0556M3 8.00003H5.5M4 12H5.5M4.5 16H5.5M9.96153 12.4896L9.07002 15.4486C8.73252 16.5688 8.56376 17.1289 8.70734 17.4633C8.83199 17.7537 9.08656 17.9681 9.39391 18.0415C9.74792 18.1261 10.2711 17.8645 11.3175 17.3413L19.1378 13.4311C20.059 12.9705 20.5197 12.7402 20.6675 12.4285C20.7961 12.1573 20.7961 11.8427 20.6675 11.5715C20.5197 11.2598 20.059 11.0295 19.1378 10.5689L11.3068 6.65342C10.2633 6.13168 9.74156 5.87081 9.38789 5.95502C9.0808 6.02815 8.82627 6.24198 8.70128 6.53184C8.55731 6.86569 8.72427 7.42461 9.05819 8.54246L9.96261 11.5701C10.0137 11.7411 10.0392 11.8266 10.0493 11.9137C10.0583 11.991 10.0582 12.069 10.049 12.1463C10.0387 12.2334 10.013 12.3188 9.96153 12.4896Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
 
-    <!-- Toggle switch -->
-    <div class="w-full md:w-auto flex justify-center md:justify-between items-center mt-2 md:mt-0 md:ml-auto md:mr-24">
-        <label for="allow_db_edit" class="flex items-center cursor-pointer">
-            <span class="text-base md:text-sm text-gray-700 font-medium">Allow Database Editing</span>
-            <div class="relative ml-2">
-                <input type="checkbox" id="allow_db_edit" name="allow_db_edit" class="sr-only" onchange="toggleSwitch()">
-                <div class="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full"></div>
-                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform"></div>
-            </div>
-        </label>
+        <!-- Toggle switch -->
+        <div class="w-full md:w-auto flex justify-center md:justify-between items-center mt-2 md:mt-0 md:ml-auto md:mr-24">
+            <label for="allow_db_edit" class="flex items-center cursor-pointer">
+                <span class="text-base md:text-sm text-gray-700 font-medium">Allow Database Editing</span>
+                <div class="relative ml-2">
+                    <input type="checkbox" id="allow_db_edit" name="allow_db_edit" class="sr-only" onchange="toggleDBEdit()">
+                    <div class="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full"></div>
+                    <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform"></div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Debug Toggle Switch -->
+        <div class="w-full md:w-auto flex justify-center md:justify-between items-center mt-2 md:mt-0 md:ml-auto md:mr-24">
+            <label for="debug_toggle" class="flex items-center cursor-pointer">
+                <span class="text-base md:text-sm text-gray-700 font-medium">Debug Mode</span>
+                <div class="relative ml-2">
+                    <input type="checkbox" id="debug_toggle" name="debug_toggle" class="sr-only" onclick="toggleDebug()">
+                    <div class="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full"></div>
+                    <div class="dot2 absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition transform"></div>
+                </div>
+            </label>
+        </div>
+
     </div>
 </div>
-
-
-
-</div>
-
 <script>
     // JavaScript to keep chat scrolled to bottom
     var chatWindow = document.querySelector('.overflow-y-auto');
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    // JavaScript for toggle switch
-    function toggleSwitch() {
+    // JavaScript for db edit toggle
+    function toggleDBEdit() {
         var checkbox = document.getElementById('allow_db_edit');
         var hiddenInput = document.getElementById('allow_db_edit_hidden');
         var dot = document.querySelector('.dot');
@@ -147,25 +162,69 @@
         }
     }
 
+    // JavaScript for debug toggle
+    function toggleDebug() {
+        var debugToggle = document.getElementById('debug_toggle');
+        var hiddenDebugInput = document.getElementById('debug_mode');
+        var dot2 = document.querySelector('.dot2');
+
+        if (debugToggle.checked) {
+            dot2.style.transform = 'translateX(100%)';
+            dot2.style.backgroundColor = '#FFD300';
+            hiddenDebugInput.value = "true";
+        } else {
+            dot2.style.transform = 'translateX(0%)';
+            dot2.style.backgroundColor = '#FFF';
+            hiddenDebugInput.value = "false";
+        }
+
+        var debugElements = document.querySelectorAll('.debug-info');
+        debugElements.forEach(function(elem) {
+            elem.classList.toggle('hidden');
+        });
+    }
+
+    // Set the initial state of the debug & db edit toggles based on the hidden input value
+    window.onload = function() {
+        var hiddenDebugInput = document.getElementById('debug_mode');
+        var debugToggle = document.getElementById('debug_toggle');
+        debugToggle.checked = hiddenDebugInput.value === 'true';
+
+        // Set the initial visibility of the debug information
+        var debugElements = document.querySelectorAll('.debug-info');
+        debugElements.forEach(function(elem) {
+            elem.classList.toggle('hidden', hiddenDebugInput.value !== 'true');
+        });
+
+        // Set the initial position of the toggle switch
+        var dot2 = document.querySelector('.dot2');
+        if (debugToggle.checked) {
+            dot2.style.transform = 'translateX(100%)';
+            dot2.style.backgroundColor = '#FFD300';
+        } else {
+            dot2.style.transform = 'translateX(0%)';
+            dot2.style.backgroundColor = '#FFF';
+        }
+    };
+
+
     function toggleModal() {
         var modal = document.getElementById('infoModal');
         var modalContent = modal.querySelector('.rounded-lg');
 
         // Toggle the modal's visibility
         if (modal.classList.contains('hidden')) {
-            // Prepare the modal to be displayed
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.style.opacity = '1';
                 modalContent.style.transform = 'translateY(0)';
-            }, 10); // Start the animation shortly after the modal is no longer hidden
+            }, 10);
         } else {
-            // Hide the modal
             modal.style.opacity = '0';
             modalContent.style.transform = 'translateY(100%)';
             setTimeout(() => {
                 modal.classList.add('hidden');
-            }, 300); // Delay the hiding until the animation is complete
+            }, 300);
         }
     }
 

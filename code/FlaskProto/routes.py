@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, session, redirect, url_for, reques
 from database import db, SampleDatabase
 import os
 from chatbot import ChatbotProcessor
-from werkzeug.utils import secure_filename
 
 def allowed_file(filename, app):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -14,7 +13,6 @@ class RateLimitError(Exception):
 def create_routes_blueprint(app):
     routes = Blueprint('routes', __name__)
 
-    # Routes
     # Landing Page
     @routes.route("/")
     def index():
@@ -28,12 +26,12 @@ def create_routes_blueprint(app):
         if request.method == 'POST':
             # Check if the post request has the file part
             file = request.files.get('file')
-            if not file:
+            if not file or file.filename == '':
                 return render_template('upload-db.html', sample_databases=sample_databases)
             if file.filename == '':
                 return render_template('upload-db.html', sample_databases=sample_databases)
             if file and allowed_file(file.filename, app):
-                filename = secure_filename(file.filename)
+                filename = file.filename
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 session['db_path'] = filepath
@@ -53,18 +51,21 @@ def create_routes_blueprint(app):
         session.pop('db_path', None)
         session.pop('conversation', None)
         session.pop('sample_content', None)
-        
-        # Query the database for the sample database with the given name
+        session['allow_db_edit'] = False
+
         sample_db = SampleDatabase.query.filter_by(name=db_name).first()
 
-        # Initialize the chatbot processor with the sample database
-        processor = ChatbotProcessor(sample_db.path)
-        processor.reset_memory()
         if sample_db and os.path.isfile(sample_db.path):
             session['db_path'] = sample_db.path
+
+            # Reset memory
+            processor = ChatbotProcessor(sample_db.path)
+            processor.reset_memory()
+
             return redirect(url_for('routes.chat'))
 
         return "Sample database not found.", 404
+
 
     @routes.route("/chat", methods=["GET", "POST"])
     def chat():
@@ -79,22 +80,29 @@ def create_routes_blueprint(app):
         if request.method == "POST":
             user_message = request.form["message"]
             allow_db_edit = request.form.get("allow_db_edit_hidden", "false") == "true"
+            session['debug_mode'] = request.form.get('debug_mode', 'false') == 'true'
             db_path = session.get('db_path', 'chinook.db') 
-
+            
             print("Allow DB Edit:", allow_db_edit)
 
             processor = ChatbotProcessor(db_path, allow_db_edit=allow_db_edit)
             
             try:
-                bot_response = processor.process_message(user_message)
-            except RateLimitError as e:
-                return render_template("rate_limit_error.html", error=str(e)) # not implemented yet
+                bot_response, debug_info = processor.process_message(user_message)
+                print(f"Bot Response: {bot_response}, Debug Info:, {debug_info}")
+            except ValueError as e:
+                # Handle the ValueError specifically if needed
+                bot_response = "An error occurred while processing the message."
+                debug_info = {"error": str(e)}
+                print(f"Error: {e}")
 
             # Update conversation history
             if 'conversation' not in session:
                 session['conversation'] = []
             session['conversation'].append({"type": "user", "text": user_message})
             session['conversation'].append({"type": "bot", "text": bot_response})
+            session['conversation'].append({"type": "bot_debug", "sql_query": debug_info['sql_query'], "sql_output": debug_info['sql_output']})
+            
             session.modified = True
 
         # Pass the sample_db variable to the template context
@@ -111,7 +119,6 @@ def create_routes_blueprint(app):
             return render_template("chat.html", 
                             conversation=session.get('conversation', []),
                             sample_db=sample_db,
-                            description_html=description_html,
                             sample_content=session['sample_content'])
         else:
             return render_template("chat.html", 
