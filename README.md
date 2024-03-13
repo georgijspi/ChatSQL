@@ -34,6 +34,9 @@
   - [5.1 Hardware and Software Requirements](#51-hardware-and-software-requirements)
   - [5.2 Installation Steps](#52-installation-steps)
 - [6. References](#6-references)
+- [7. Appendix](#7-appendix)
+  - [7.1 Appendix A: LLM Hallucinations](#71-appendix-a-llm-hallucinations)
+  - [7.2 Appendix B: Test Plan](#72-appendix-b-test-plan)
 
 # 1. Introduction
 
@@ -376,3 +379,28 @@ flask populate-db
 \[1\]LangChain: [https://www.langchain.com/](https://www.langchain.com/)
 \[2\]OpenAI API: [https://openai.com/blog/openai-api](https://openai.com/blog/openai-api)
 \[3\]Flask: [https://flask.palletsprojects.com/en/3.0.x/](https://flask.palletsprojects.com/en/3.0.x/)
+
+# 7 Appendix
+## 7.1 A: LLM Hallucinations
+Hallucination in LLMs is an intricate and important problem, it referes to a model's generation of incorrect or nonsensical information. Such LLM hallucinations are not a result of error in the form of incorrect user input, hallucinations in LLMs represent a broader issue. This issue extends to include inaccuracies concerning general world knowledge. This means an LLM can "hallucinate" by giving false or illogical information that does not align with established logical reasoning or facts. [4]
+
+In testing of our implementation we came acrosss such hallucinations in the Covid Vaccinations Database. Below is an example of a prompt and subsequent response:
+```txt
+User: What is the total number of vaccinations recorded in a particular local electoral area?
+Bot: The result is: (1875.9,)
+```
+
+The above interaction consists of a User question taken from `test_data.json` and the Bot's response. The question was ambiguous and asked for a "particular local electoral area", yet no local electoral area was supplied. 
+
+The correct answer would have been an error and refusal to answer as no local electoral area was supplied, instead on each test run a different answer was given. 
+
+## 7.2 B: Testing
+To make sure our main features are always functional, we use the pytest testing framework for our test suite. Among our tests are: 
+
+- Pre-processing Function Testing: We velidate the pre-processing functions, such as database schema generation and error exception handling, that are needed for our chatbot. We prepare a sample database, by asserting the generated database schema matches our expected result, and testing the ability raise an error for non-existing databases, we are able to achieve our goal of this testing.
+
+- Data Correctness Testing: We created a set of questions and expected response for our chatbot to assess the correctness. By running pytest, we can quickly gather the data we needed to compare it to previous results to make minor adjustments to our chatbot temperature and prompt selection.
+
+- Prompt Testing: We initialize the `ChatbotProcessor` class and generate responses to each of the questions in `test_data.json`, the LLM's output is then execute using the `execute_sql_query` function and asserted against a known valid response to each question.
+
+This structured approach for our test suite ensure that our system's functionality are always valid and helps to identify and address any issues, including LLM hallucinations.
